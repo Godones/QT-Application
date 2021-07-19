@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1077</width>
+    <height>693</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <item>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>782</width>
+         <height>570</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QWidget" name="widget" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1077</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>开始</string>
+    </property>
+    <addaction name="openresposityaction"/>
+    <addaction name="addrepositoryaction"/>
+    <addaction name="addsubsectionaction"/>
+    <addaction name="addfileaction"/>
+    <addaction name="deletedotaction"/>
+    <addaction name="exitaction"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>工具</string>
+    </property>
+    <addaction name="bigeraction"/>
+    <addaction name="smalleraction"/>
+    <addaction name="realsizeaction"/>
+    <addaction name="fitwideaction"/>
+    <addaction name="fitheightaction"/>
+    <addaction name="fitwindowsaction"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>侧边栏</string>
+    </property>
+    <addaction name="windowfloataction"/>
+    <addaction name="Unfolddotaction"/>
+    <addaction name="windowlookaction"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="openresposityaction"/>
+   <addaction name="addrepositoryaction"/>
+   <addaction name="addsubsectionaction"/>
+   <addaction name="addfileaction"/>
+   <addaction name="deletedotaction"/>
+   <addaction name="Unfolddotaction"/>
+   <addaction name="separator"/>
+   <addaction name="bigeraction"/>
+   <addaction name="smalleraction"/>
+   <addaction name="realsizeaction"/>
+   <addaction name="fitwindowsaction"/>
+   <addaction name="fitwideaction"/>
+   <addaction name="fitheightaction"/>
+   <addaction name="separator"/>
+   <addaction name="windowfloataction"/>
+   <addaction name="windowlookaction"/>
+   <addaction name="exitaction"/>
+   <addaction name="separator"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QTreeView" name="pictreeView"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="overlookaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/循环.png</normaloff>:/icons/icons/循环.png</iconset>
+   </property>
+   <property name="text">
+    <string>遍历节点</string>
+   </property>
+  </action>
+  <action name="bigeraction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/放大.png</normaloff>:/icons/icons/放大.png</iconset>
+   </property>
+   <property name="text">
+    <string>放大</string>
+   </property>
+  </action>
+  <action name="smalleraction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/缩小.png</normaloff>:/icons/icons/缩小.png</iconset>
+   </property>
+   <property name="text">
+    <string>缩小</string>
+   </property>
+  </action>
+  <action name="realsizeaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/放大镜.png</normaloff>:/icons/icons/放大镜.png</iconset>
+   </property>
+   <property name="text">
+    <string>实际大小</string>
+   </property>
+  </action>
+  <action name="fitwideaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/宽度.png</normaloff>:/icons/icons/宽度.png</iconset>
+   </property>
+   <property name="text">
+    <string>适合宽度</string>
+   </property>
+  </action>
+  <action name="fitheightaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/高度.png</normaloff>:/icons/icons/高度.png</iconset>
+   </property>
+   <property name="text">
+    <string>适合高度</string>
+   </property>
+  </action>
+  <action name="windowfloataction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/浮动窗口.png</normaloff>:/icons/icons/浮动窗口.png</iconset>
+   </property>
+   <property name="text">
+    <string>窗体浮动</string>
+   </property>
+  </action>
+  <action name="windowlookaction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/窗体.png</normaloff>:/icons/icons/窗体.png</iconset>
+   </property>
+   <property name="text">
+    <string>隐藏窗体</string>
+   </property>
+  </action>
+  <action name="exitaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/退出.png</normaloff>:/icons/icons/退出.png</iconset>
+   </property>
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="fitwindowsaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/适合大小.png</normaloff>:/icons/icons/适合大小.png</iconset>
+   </property>
+   <property name="text">
+    <string>适合窗口</string>
+   </property>
+  </action>
+  <action name="Unfolddotaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/展开.png</normaloff>:/icons/icons/展开.png</iconset>
+   </property>
+   <property name="text">
+    <string>展开节点</string>
+   </property>
+  </action>
+  <action name="addrepositoryaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/图片存储库.png</normaloff>:/icons/icons/图片存储库.png</iconset>
+   </property>
+   <property name="text">
+    <string>新建存储库</string>
+   </property>
+  </action>
+  <action name="addsubsectionaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/添加目录.png</normaloff>:/icons/icons/添加目录.png</iconset>
+   </property>
+   <property name="text">
+    <string>添加分类</string>
+   </property>
+  </action>
+  <action name="addfileaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/添加文件.png</normaloff>:/icons/icons/添加文件.png</iconset>
+   </property>
+   <property name="text">
+    <string>添加图片</string>
+   </property>
+   <property name="font">
+    <font/>
+   </property>
+  </action>
+  <action name="deletedotaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/删除.png</normaloff>:/icons/icons/删除.png</iconset>
+   </property>
+   <property name="text">
+    <string>删除</string>
+   </property>
+   <property name="font">
+    <font/>
+   </property>
+  </action>
+  <action name="openresposityaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/打开.png</normaloff>:/icons/icons/打开.png</iconset>
+   </property>
+   <property name="text">
+    <string>打开</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>exitaction</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

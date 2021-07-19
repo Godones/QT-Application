@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/窗体.png</file>
+        <file>icons/放大.png</file>
+        <file>icons/放大镜.png</file>
+        <file>icons/浮动窗口.png</file>
+        <file>icons/高度.png</file>
+        <file>icons/宽度.png</file>
+        <file>icons/删除.png</file>
+        <file>icons/适合大小.png</file>
+        <file>icons/适合宽度.png</file>
+        <file>icons/缩小.png</file>
+        <file>icons/添加目录.png</file>
+        <file>icons/添加文件.png</file>
+        <file>icons/图片存储库.png</file>
+        <file>icons/图片管理.png</file>
+        <file>icons/退出.png</file>
+        <file>icons/循环.png</file>
+        <file>icons/展开.png</file>
+        <file>icons/打开.png</file>
+    </qresource>
+</RCC>
