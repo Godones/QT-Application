@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/Pdf.png</file>
+        <file>icons/openfile.png</file>
+        <file>icons/exit.png</file>
+        <file>icons/addfile.png</file>
+        <file>icons/createlib.png</file>
+        <file>icons/addfile2.png</file>
+        <file>icons/type.png</file>
+    </qresource>
+</RCC>
