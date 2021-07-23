@@ -7,5 +7,6 @@
         <file>icons/createlib.png</file>
         <file>icons/addfile2.png</file>
         <file>icons/type.png</file>
+        <file>icons/openone.png</file>
     </qresource>
 </RCC>

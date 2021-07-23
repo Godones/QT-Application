@@ -20,3 +20,4 @@ void FormPdf::loadpdf(QImage &pdfimg)
 {
     ui->label->setPixmap(QPixmap::fromImage(pdfimg));
 }
+

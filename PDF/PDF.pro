@@ -11,15 +11,18 @@ CONFIG += c++11
 SOURCES += \
     formpdf.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    showpdfform.cpp
 
 HEADERS += \
     formpdf.h \
-    mainwindow.h
+    mainwindow.h \
+    showpdfform.h
 
 FORMS += \
     formpdf.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    showpdfform.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -5,6 +5,8 @@
 #include<QImage>
 #include<QLabel>
 #include<QMessageBox>
+#include<QPainter>
+
 
 namespace Ui {
 class FormPdf;
@@ -19,6 +21,9 @@ public:
     ~FormPdf();
 public:
     void loadpdf(QImage& pdfimg);
+    void loadpdf(QPainter *painter);
+
+
 private:
     Ui::FormPdf *ui;
 
