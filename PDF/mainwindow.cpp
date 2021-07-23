@@ -20,6 +20,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::openpdf(QString filepath)
 {
+    //打开pdf并展示
+
     FormPdf * pdf = new FormPdf(this);//子页面
     ui->mdiArea->addSubWindow(pdf);
     //加载文件
@@ -51,17 +53,25 @@ void MainWindow::isbelongQt(QString &dir)
     //判断是否是QT创建的仓库
 }
 
+void MainWindow::showpdftable()
+{
+    showpdfForm *showform = new showpdfForm;
+    ui->mdiArea->addSubWindow(showform);
+    showform->init(Rootpath);
+    showform->show();
+    connect(showform,&showpdfForm::sentfilepath,this,&MainWindow::showpdfslot);//连接子窗口与父窗口
+    connect(this,&MainWindow::sentinformation_addfile,showform,&showpdfForm::receive_information_addfile);
+}
+
 void MainWindow::on_openfileaction_triggered()
 {
     //打开仓库，需要识别是否是QT创建的仓库
-    QString path = QFileDialog::getExistingDirectory(this);
-    if(path.isEmpty())return;
-    showpdfForm *showform = new showpdfForm;
-    ui->mdiArea->addSubWindow(showform);
-    showform->init(path);
-    showform->show();
-    connect(showform,&showpdfForm::sentfilepath,this,&MainWindow::showpdfslot);//连接子窗口与父窗口
+    //更新Rootpath
+    Rootpath = QFileDialog::getExistingDirectory(this);
+    if(Rootpath.isEmpty())return;
+    showpdftable();
 }
+
 
 void MainWindow::inputresposityname(QString& resposity)
 {
@@ -80,6 +90,7 @@ void MainWindow::inputresposityname(QString& resposity)
     delete input;
 }
 
+
 void MainWindow::on_createlibaction_triggered()
 {
     //新建仓库
@@ -92,28 +103,56 @@ void MainWindow::on_createlibaction_triggered()
     if(dir.isEmpty()) return;
     QString resposityname;
     inputresposityname(resposityname);//获取仓库名称
+
     if(!resposityname.isEmpty())
     {
         repo.mkdir(resposityname);//建立仓库
-        QFile file(dir+"/+resposity.txt");
+        Rootpath = dir +"/"+ resposityname;//切换根目录
+
+        //建立resposity文件存储一些信息
+        QFile file(dir+"/"+resposityname+"/resposity.txt");
         file.open(QIODevice::ReadWrite|QIODevice::Text);
         file.write("QT CREATE\n");
+
+
+        showpdftable();//新建仓库的时候需要切换到当前仓库
     }
 
 }
-
-
-void MainWindow::on_typeaction_triggered()
-{
-    //新建分类
-
-}
-
 
 void MainWindow::on_openoneaction_triggered()
 {
     //打开pdf文件
     QString filepath = QFileDialog::getOpenFileName(this,"","",tr("pdf(*.pdf)"));//打开pdf文件
     openpdf(filepath);
+}
+
+QString MainWindow::getfinaldirname(const QString &fulldirname)
+{
+    //返回文件名
+    int length = fulldirname.length();
+    int add = fulldirname.lastIndexOf("/");
+    return fulldirname.right(length-add-1);
+}
+
+void MainWindow::on_addfileaction_triggered()
+{
+    //添加pdf文件
+    //添加图片文件，会将图片移动到此此仓库下
+    //过滤器
+    QString filter = "pdf(*.pdf)";
+    QStringList filenames = QFileDialog::getOpenFileNames(this,
+                                                          "选择一个或多个文件","",filter);
+    if(filenames.empty()) return;//没有选择文件就退出
+
+    QStringList newfilenames;
+    for(auto &x:filenames){
+        QString newname = Rootpath+'/'+getfinaldirname(x);
+        QFile::rename(x,newname);//移动文件
+        newfilenames.append(newname);
+    }
+
+    emit sentinformation_addfile(newfilenames);//发射信号给子窗口
+
 }
 

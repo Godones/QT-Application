@@ -86,7 +86,6 @@
    <addaction name="openoneaction"/>
    <addaction name="openfileaction"/>
    <addaction name="createlibaction"/>
-   <addaction name="typeaction"/>
    <addaction name="addfileaction"/>
    <addaction name="exitaction"/>
   </widget>

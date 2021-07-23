@@ -27,10 +27,12 @@ public:
     ~showpdfForm();
 
     void init(QString &path);
-    void createtable(QVector<QImage>&ico,QVector<QString>&names);
+    void createtable();
     void resizeEvent(QResizeEvent *event) override;
 
     void connectSlot();
+
+    void receive_information_addfile(QStringList pdffiles);//槽函数接受主窗口的增加文件事件
 
 signals:
     void sentfilepath(QString pdfpath);
@@ -43,6 +45,10 @@ private slots:
 private:
     QVector<QImage>ico;//存储所有能打开的pdf图标
     QVector<QString>name;//存储名字后续显示
+
+
+
+
     Ui::showpdfForm *ui;
 };
 

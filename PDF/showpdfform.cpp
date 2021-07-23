@@ -18,6 +18,26 @@ void showpdfForm::connectSlot()
 
 }
 
+void showpdfForm::receive_information_addfile(QStringList pdffiles)
+{
+    //接收来自主窗口增加文件发射的信号;
+
+    qDebug()<<pdffiles.size();
+
+    Poppler::Document *pdfdoc=nullptr;
+    QMimeDatabase db;
+    for(int i=0;i<pdffiles.size();i++){
+        pdfdoc = Poppler::Document::load(pdffiles[i]);//只添加可以打开的pdf文件
+        if(pdfdoc!=nullptr){
+            QImage image= pdfdoc->page(0)->renderToImage();
+            if(image.isNull()) continue;
+            ico.push_back(image);
+            name.push_back(pdffiles[i]);
+        }
+    }
+    createtable();
+}
+
 showpdfForm::~showpdfForm()
 {
     delete ui;
@@ -28,7 +48,6 @@ void showpdfForm::init(QString &path)
     //显示path文件夹下的所有pdf文件
     QDir dir(path);
     QStringList allpdf = dir.entryList(QDir::Files);//获取所有的文件
-
     Poppler::Document *pdfdoc=nullptr;
     QMimeDatabase db;
     for(int i=0;i<allpdf.size();i++){
@@ -44,10 +63,10 @@ void showpdfForm::init(QString &path)
             name.push_back(dir.absoluteFilePath(allpdf[i]));
         }
     }
-    createtable(ico,name);
+    createtable();
 }
 
-void showpdfForm::createtable(QVector<QImage> &ico, QVector<QString> &names)
+void showpdfForm::createtable()
 {
     //设置滚轮
     ui->tableWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -65,8 +84,12 @@ void showpdfForm::createtable(QVector<QImage> &ico, QVector<QString> &names)
     //设置行列标题的可见性
     ui->tableWidget->verticalHeader()->setVisible(false);
     ui->tableWidget->horizontalHeader()->setVisible(false);
+
+    if(ico.isEmpty()) return;
+
     for(int i=0;i<ui->tableWidget->columnCount();i++){
         for(int j=0;j<ui->tableWidget->rowCount();j++){
+            if(i*4+j+1>ico.size()) return;
             QLabel* label = new QLabel;
             label->setPixmap(QPixmap::fromImage(ico[i*4+j]).scaled(wide,wide*4/3));
             QTableWidgetItem *item = new QTableWidgetItem;
@@ -81,7 +104,7 @@ void showpdfForm::createtable(QVector<QImage> &ico, QVector<QString> &names)
 void showpdfForm::resizeEvent(QResizeEvent *event)
 {
 //    QMessageBox::information(this,"","waring");
-    createtable(ico,name);
+    createtable();
 }
 
 

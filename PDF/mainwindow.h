@@ -26,6 +26,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void sentinformation_addfile(QStringList newnames);//增加文件时向showpdfform发射
 
 public:
     void openpdf(QString filepath);
@@ -36,17 +38,23 @@ public:
 
     void inputresposityname(QString &resposity);
 
+    void showpdftable();
+
 private slots:
     void on_openfileaction_triggered();
 
     void on_createlibaction_triggered();
 
-    void on_typeaction_triggered();
 
     void on_openoneaction_triggered();
+
+    void on_addfileaction_triggered();
 
 private:
     Ui::MainWindow *ui;
 
+    QString Rootpath;//保存仓库的路径
+
+    QString getfinaldirname(const QString &fulldirname);
 };
 #endif // MAINWINDOW_H
