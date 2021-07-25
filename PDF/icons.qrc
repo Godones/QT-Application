@@ -8,5 +8,10 @@
         <file>icons/addfile2.png</file>
         <file>icons/type.png</file>
         <file>icons/openone.png</file>
+        <file>icons/bigger.png</file>
+        <file>icons/fiT.png</file>
+        <file>icons/nextpage.png</file>
+        <file>icons/prepage.png</file>
+        <file>icons/smaller.png</file>
     </qresource>
 </RCC>

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include<QPainter>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,6 +9,31 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     setCentralWidget(ui->mdiArea);
+
+    Locatedpage = new QSpinBox(this);
+    Locatedpage->setMinimum(0);
+    ui->toolBar->addSeparator();
+    connect(Locatedpage,SIGNAL(valueChanged(int)),this,SLOT(on_Locatedpage_valchanged(int)));
+
+    Scaling = new QSlider(Qt::Horizontal);
+    //设置滑动条控件的最小值
+    Scaling->setMinimum(0);
+     //设置滑动条控件的最大值
+     Scaling->setMaximum(200);
+     //设置滑动条控件的值
+    Scaling->setValue(100);
+    Scaling->setMaximumWidth(100);
+    Scaling->setTickPosition(QSlider::TicksBelow);
+    Scaling->setTickInterval(25);
+    Scaling->setSingleStep(25);
+
+     //信号和槽 当滑动条的值发生改变时，即产生一个valueChanged(int)信号 设置QLineEdit控件的显示文本
+    connect(Scaling, SIGNAL(valueChanged(int)), this, SLOT(resetScale(int)));
+
+
+    ui->toolBar->addWidget(Locatedpage);
+    ui->toolBar->addSeparator();
+    ui->toolBar->addWidget(Scaling);
     ui->mdiArea->setViewMode(QMdiArea::TabbedView);//多页显示
     ui->mdiArea->setTabsClosable(true);//打开关闭按钮
 }
@@ -21,26 +46,14 @@ MainWindow::~MainWindow()
 void MainWindow::openpdf(QString filepath)
 {
     //打开pdf并展示
-
-    FormPdf * pdf = new FormPdf(this);//子页面
+    FormPdf * pdf = new FormPdf(ui->mdiArea);//子页面
     ui->mdiArea->addSubWindow(pdf);
     //加载文件
-    Poppler::Document *pdfdoc = Poppler::Document::load(filepath);
+    pdf->PdfPath = filepath;
+    pdf->Pdfname = getfinaldirname(filepath);
+    pdf->loadpdf();
+    pdf->show();
 
-    QRect mrect;//获取设备分辨率
-    mrect =QGuiApplication::primaryScreen()->geometry();
-    qDebug()<<mrect.width()<<" "<<mrect.height();
-
-    if(pdfdoc!=nullptr){
-        pdfdoc->setRenderHint(Poppler::Document::TextAntialiasing);
-        QSize size = pdfdoc->page(0)->pageSize();//页面大小
-        qDebug()<<size;
-        QImage image= pdfdoc->page(0)->renderToImage();
-        pdf->loadpdf(image);
-        pdf->show();
-
-    }
-    delete pdfdoc;
 }
 
 void MainWindow::showpdfslot(QString filepath)
@@ -55,7 +68,7 @@ void MainWindow::isbelongQt(QString &dir)
 
 void MainWindow::showpdftable()
 {
-    showpdfForm *showform = new showpdfForm;
+    showpdfForm *showform = new showpdfForm(ui->mdiArea);
     ui->mdiArea->addSubWindow(showform);
     showform->init(Rootpath);
     showform->show();
@@ -113,8 +126,6 @@ void MainWindow::on_createlibaction_triggered()
         QFile file(dir+"/"+resposityname+"/resposity.txt");
         file.open(QIODevice::ReadWrite|QIODevice::Text);
         file.write("QT CREATE\n");
-
-
         showpdftable();//新建仓库的时候需要切换到当前仓库
     }
 
@@ -124,8 +135,11 @@ void MainWindow::on_openoneaction_triggered()
 {
     //打开pdf文件
     QString filepath = QFileDialog::getOpenFileName(this,"","",tr("pdf(*.pdf)"));//打开pdf文件
-    openpdf(filepath);
+    if(!filepath.isEmpty())
+        openpdf(filepath);
 }
+
+
 
 QString MainWindow::getfinaldirname(const QString &fulldirname)
 {
@@ -154,5 +168,52 @@ void MainWindow::on_addfileaction_triggered()
 
     emit sentinformation_addfile(newfilenames);//发射信号给子窗口
 
+}
+
+
+
+void MainWindow::on_fitaction_triggered()
+{
+    //适合窗口显示
+   QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
+   FormPdf *temp =(FormPdf*) subwindow->widget();
+   if(temp) temp->fitwindowshow();
+
+}
+
+
+void MainWindow::on_nextpageaction_triggered()
+{
+    //下一页
+    QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
+    FormPdf *temp =(FormPdf*) subwindow->widget();
+    if(temp) temp->nextview();
+}
+
+
+void MainWindow::on_prepageaction_triggered()
+{
+//    上一页
+    QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
+    FormPdf *temp =(FormPdf*) subwindow->widget();
+    if(temp) temp->preview();
+}
+
+void MainWindow::on_Locatedpage_valchanged(int num)
+{
+    //定位到某一页
+    qDebug()<<num;
+    QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
+    FormPdf *temp =(FormPdf*) subwindow->widget();
+    if(temp) temp->located(num-1);
+}
+
+void MainWindow::resetScale(int scale)
+{
+    //缩放
+    qDebug()<<scale;
+    QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
+    FormPdf *temp =(FormPdf*) subwindow->widget();
+    if(temp) temp->scale(scale);
 }
 

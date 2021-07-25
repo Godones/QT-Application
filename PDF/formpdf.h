@@ -6,7 +6,8 @@
 #include<QLabel>
 #include<QMessageBox>
 #include<QPainter>
-
+#include<poppler-qt5.h>
+#include<QDebug>
 
 namespace Ui {
 class FormPdf;
@@ -20,11 +21,26 @@ public:
     explicit FormPdf(QWidget *parent = nullptr);
     ~FormPdf();
 public:
-    void loadpdf(QImage& pdfimg);
+    QImage currentshow;
+
+    QString PdfPath;//每个页面是一个pdf文件
+    QString Pdfname;
+    int currentpage;//当前页面
+    Poppler::Document *pdfdoc ;
+
+
+    void loadpdf();
     void loadpdf(QPainter *painter);
 
+    void fitwindowshow();
+    void scale(int factor);
 
+    void nextview();
+    void preview();
+
+    void located(int num);
 private:
+
     Ui::FormPdf *ui;
 
 };

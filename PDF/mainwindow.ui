@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>883</width>
-    <height>635</height>
+    <width>867</width>
+    <height>628</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>883</width>
+     <width>867</width>
      <height>26</height>
     </rect>
    </property>
@@ -75,7 +75,7 @@
     </size>
    </property>
    <property name="toolButtonStyle">
-    <enum>Qt::ToolButtonTextUnderIcon</enum>
+    <enum>Qt::ToolButtonIconOnly</enum>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -88,6 +88,10 @@
    <addaction name="createlibaction"/>
    <addaction name="addfileaction"/>
    <addaction name="exitaction"/>
+   <addaction name="separator"/>
+   <addaction name="prepageaction"/>
+   <addaction name="nextpageaction"/>
+   <addaction name="fitaction"/>
   </widget>
   <action name="openfileaction">
    <property name="icon">
@@ -141,6 +145,54 @@
    </property>
    <property name="text">
     <string>打开文件</string>
+   </property>
+  </action>
+  <action name="nextpageaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/nextpage.png</normaloff>:/icons/icons/nextpage.png</iconset>
+   </property>
+   <property name="text">
+    <string>下一页</string>
+   </property>
+  </action>
+  <action name="prepageaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/prepage.png</normaloff>:/icons/icons/prepage.png</iconset>
+   </property>
+   <property name="text">
+    <string>上一页</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="bigaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/bigger.png</normaloff>:/icons/icons/bigger.png</iconset>
+   </property>
+   <property name="text">
+    <string>放大</string>
+   </property>
+  </action>
+  <action name="smalleraction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/smaller.png</normaloff>:/icons/icons/smaller.png</iconset>
+   </property>
+   <property name="text">
+    <string>缩小</string>
+   </property>
+  </action>
+  <action name="fitaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/fiT.png</normaloff>:/icons/icons/fiT.png</iconset>
+   </property>
+   <property name="text">
+    <string>适合页面</string>
    </property>
   </action>
  </widget>

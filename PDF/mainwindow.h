@@ -11,7 +11,9 @@
 #include "showpdfform.h"
 #include<QDebug>
 #include<QInputDialog>
-#include<QLineEdit>
+#include <QSpinBox>
+#include<QMdiSubWindow>
+#include<QSlider>
 
 
 QT_BEGIN_NAMESPACE
@@ -40,6 +42,8 @@ public:
 
     void showpdftable();
 
+
+
 private slots:
     void on_openfileaction_triggered();
 
@@ -50,10 +54,23 @@ private slots:
 
     void on_addfileaction_triggered();
 
+    void on_fitaction_triggered();
+
+    void on_nextpageaction_triggered();
+
+    void on_prepageaction_triggered();
+
+    void on_Locatedpage_valchanged(int num);
+
+    void resetScale(int);
+
 private:
     Ui::MainWindow *ui;
 
     QString Rootpath;//保存仓库的路径
+
+    QSpinBox *Locatedpage;
+    QSlider *Scaling;//缩放因子
 
     QString getfinaldirname(const QString &fulldirname);
 };

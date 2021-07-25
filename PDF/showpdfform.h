@@ -14,6 +14,7 @@
 #include<QMessageBox>
 
 
+
 namespace Ui {
 class showpdfForm;
 }
@@ -45,8 +46,11 @@ private slots:
 private:
     QVector<QImage>ico;//存储所有能打开的pdf图标
     QVector<QString>name;//存储名字后续显示
+    const int wideCover = 200;   //展示封面大小
+    const int heightCover = 300;
 
-
+    const int wideGap = 10;
+    const int heightGap = 80;
 
 
     Ui::showpdfForm *ui;
