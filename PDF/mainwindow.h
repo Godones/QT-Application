@@ -31,7 +31,7 @@ public:
 signals:
     void sentinformation_addfile(QStringList newnames);//增加文件时向showpdfform发射
 
-public:
+private:
     void openpdf(QString filepath);
 
     void showpdfslot(QString filepath);
@@ -41,6 +41,8 @@ public:
     void inputresposityname(QString &resposity);
 
     void showpdftable();
+
+    void setActionTF(bool arg);
 
 
 
@@ -60,9 +62,13 @@ private slots:
 
     void on_prepageaction_triggered();
 
-    void on_Locatedpage_valchanged(int num);
+    void Locatedpage_valchanged(int num);
 
     void resetScale(int);
+
+    void on_fitwindowsaction_triggered();
+
+    void on_mdiArea_subWindowActivated(QMdiSubWindow *arg1);
 
 private:
     Ui::MainWindow *ui;

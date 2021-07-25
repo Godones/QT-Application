@@ -16,7 +16,7 @@ FormPdf::~FormPdf()
     delete ui;
 }
 
-void FormPdf::loadpdf()
+bool FormPdf::loadpdf()
 {
 
 
@@ -25,25 +25,35 @@ void FormPdf::loadpdf()
 //    mrect =QGuiApplication::primaryScreen()->geometry();
 //    qDebug()<<Poppler::Document::availableRenderBackends();//获取渲染后端
 
-    pdfdoc->setRenderBackend(Poppler::Document::SplashBackend);
-    pdfdoc->setRenderHint(Poppler::Document::Antialiasing);
-    pdfdoc->setRenderHint(Poppler::Document::TextAntialiasing);
-    pdfdoc->setRenderHint(Poppler::Document::ThinLineShape);
-    qDebug()<<pdfdoc->pageLayout();
     if(pdfdoc!=nullptr){
-        QSize size = pdfdoc->page(0)->pageSize();//页面大小
-        qDebug()<<size<<" "<<pdfdoc->numPages();
+        pdfdoc->setRenderBackend(Poppler::Document::SplashBackend);
+        pdfdoc->setRenderHint(Poppler::Document::Antialiasing);
+        pdfdoc->setRenderHint(Poppler::Document::TextAntialiasing);
+        pdfdoc->setRenderHint(Poppler::Document::ThinLineShape);
         currentpage = 0;
-        currentshow= pdfdoc->page(0)->renderToImage(72,72,0,currentpage,size.width(),size.height());
+        fitpageshow();
+        setWindowTitle(Pdfname);
+        return true;
     }
-    setWindowTitle(Pdfname);
-    fitwindowshow();
+    else return false;
+
 }
 
 void FormPdf::fitwindowshow()
 {
+    //PDF以适合窗口显示
+    //PDF的宽度是窗口的宽度，高度按宽度的比例缩放
+    QSize size = ui->scrollArea->size();
+    QSize pagesize = pdfdoc->page(currentpage)->pageSize();
+    float scale =(float) size.width()/ pagesize.width();
+    currentshow = pdfdoc->page(currentpage)->renderToImage(72*scale,72*scale,0,pagesize.width()*scale,pagesize.height()*scale);
+    ui->label->setPixmap(QPixmap::fromImage(currentshow));
+}
+
+void FormPdf::fitpageshow()
+{
     //PDF以适合页面显示
-    QSize size = pdfdoc->page(0)->pageSize();//页面大小
+    QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
     currentshow = pdfdoc->page(currentpage)->renderToImage(72,72,0,currentpage,size.width(),size.height());
     ui->label->setPixmap(QPixmap::fromImage(currentshow));//显示
 
@@ -52,7 +62,7 @@ void FormPdf::fitwindowshow()
 void FormPdf::scale(int factor)
 {
     float factor_ = (float)factor/100;
-    QSize size = pdfdoc->page(0)->pageSize();//页面大小
+    QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
     currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
     ui->label->setPixmap(QPixmap::fromImage(currentshow));//显示
 

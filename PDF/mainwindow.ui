@@ -46,17 +46,25 @@
     <addaction name="openoneaction"/>
     <addaction name="openfileaction"/>
     <addaction name="createlibaction"/>
-    <addaction name="typeaction"/>
     <addaction name="addfileaction"/>
+    <addaction name="separator"/>
+    <addaction name="exitaction"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
      <string>工具</string>
     </property>
-    <addaction name="exitaction"/>
+    <addaction name="fitaction"/>
+    <addaction name="fitwindowsaction"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>帮助</string>
+    </property>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="font">
@@ -92,6 +100,7 @@
    <addaction name="prepageaction"/>
    <addaction name="nextpageaction"/>
    <addaction name="fitaction"/>
+   <addaction name="fitwindowsaction"/>
   </widget>
   <action name="openfileaction">
    <property name="icon">
@@ -193,6 +202,15 @@
    </property>
    <property name="text">
     <string>适合页面</string>
+   </property>
+  </action>
+  <action name="fitwindowsaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/fitwindow.png</normaloff>:/icons/icons/fitwindow.png</iconset>
+   </property>
+   <property name="text">
+    <string>适合窗口</string>
    </property>
   </action>
  </widget>

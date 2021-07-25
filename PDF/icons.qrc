@@ -13,5 +13,6 @@
         <file>icons/nextpage.png</file>
         <file>icons/prepage.png</file>
         <file>icons/smaller.png</file>
+        <file>icons/fitwindow.png</file>
     </qresource>
 </RCC>

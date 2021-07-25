@@ -27,17 +27,14 @@ public:
     QString Pdfname;
     int currentpage;//当前页面
     Poppler::Document *pdfdoc ;
-
-
-    void loadpdf();
+    bool loadpdf();
     void loadpdf(QPainter *painter);
-
     void fitwindowshow();
+    void fitpageshow();
     void scale(int factor);
 
     void nextview();
     void preview();
-
     void located(int num);
 private:
 

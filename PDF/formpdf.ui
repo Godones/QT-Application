@@ -10,6 +10,12 @@
     <height>494</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <italic>false</italic>
+    <underline>false</underline>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -34,6 +40,14 @@
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
            <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+             </font>
+            </property>
             <property name="text">
              <string/>
             </property>
