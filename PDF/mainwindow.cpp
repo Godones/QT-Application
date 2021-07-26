@@ -78,6 +78,7 @@ void MainWindow::isbelongQt(QString &dir)
 
 void MainWindow::showpdftable()
 {
+    //QTableWidget方案
     showpdfForm *showform = new showpdfForm(ui->mdiArea);
     showform->setProperty("type","Table");
     ui->mdiArea->addSubWindow(showform);
@@ -85,9 +86,21 @@ void MainWindow::showpdftable()
     showform->show();
     connect(showform,&showpdfForm::sentfilepath,this,&MainWindow::showpdfslot);//连接子窗口与父窗口
     connect(this,&MainWindow::sentinformation_addfile,showform,&showpdfForm::receive_information_addfile);
+
+
 }
 
+void MainWindow::showtable(){
+    //启用Qlistwidget方案
+    PdfTable *showtablePDF = new PdfTable(ui->mdiArea);
+    ui->mdiArea->addSubWindow(showtablePDF);
+    showtablePDF->init_read(Rootpath);
+    showtablePDF->show();
 
+    connect(showtablePDF,&PdfTable::sentfilepath,this,&MainWindow::showpdfslot);//连接子窗口与父窗口
+    connect(this,&MainWindow::sentinformation_addfile,showtablePDF,&PdfTable::receive_information_addfile);
+
+}
 
 void MainWindow::on_openfileaction_triggered()
 {
@@ -95,7 +108,8 @@ void MainWindow::on_openfileaction_triggered()
     //更新Rootpath
     Rootpath = QFileDialog::getExistingDirectory(this);
     if(Rootpath.isEmpty())return;
-    showpdftable();
+//    showpdftable();
+    showtable();
 }
 
 

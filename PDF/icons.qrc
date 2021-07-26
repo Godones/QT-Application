@@ -14,5 +14,6 @@
         <file>icons/prepage.png</file>
         <file>icons/smaller.png</file>
         <file>icons/fitwindow.png</file>
+        <file>icons/change.png</file>
     </qresource>
 </RCC>

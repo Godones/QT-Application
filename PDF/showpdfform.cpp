@@ -142,7 +142,6 @@ void showpdfForm::createtable()
 
                 QTableWidgetItem *item = new QTableWidgetItem;
                 item->setData(Qt::UserRole,QVariant(name[k]));
-
                 ui->tableWidget->setItem(i,j,item);
                 ui->tableWidget->setCellWidget(i,j,label);
                 info.setFile(name[k]);

@@ -5,15 +5,15 @@
 #include <poppler-qt5.h>
 #include<QFile>
 #include<QDialog>
-#include<QDir>
 #include<QFileDialog>
 #include "formpdf.h"
 #include "showpdfform.h"
-#include<QDebug>
 #include<QInputDialog>
 #include <QSpinBox>
 #include<QMdiSubWindow>
 #include<QSlider>
+#include<pdftable.h>
+
 
 
 QT_BEGIN_NAMESPACE
@@ -79,5 +79,6 @@ private:
     QSlider *Scaling;//缩放因子
 
     QString getfinaldirname(const QString &fulldirname);
+    void showtable();
 };
 #endif // MAINWINDOW_H

@@ -102,6 +102,12 @@
    <addaction name="fitaction"/>
    <addaction name="fitwindowsaction"/>
   </widget>
+  <widget class="QDockWidget" name="dockWidget">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
   <action name="openfileaction">
    <property name="icon">
     <iconset resource="icons.qrc">

@@ -1,5 +1,7 @@
 QT       += core gui
 
+
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
@@ -9,19 +11,25 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    allpageshow.cpp \
     formpdf.cpp \
     main.cpp \
     mainwindow.cpp \
+    pdftable.cpp \
     showpdfform.cpp
 
 HEADERS += \
+    allpageshow.h \
     formpdf.h \
     mainwindow.h \
+    pdftable.h \
     showpdfform.h
 
 FORMS += \
+    allpageshow.ui \
     formpdf.ui \
     mainwindow.ui \
+    pdftable.ui \
     showpdfform.ui
 
 # Default rules for deployment.
@@ -35,3 +43,6 @@ win32: LIBS += -L$$PWD/poppler -llibpoppler-qt5
 RESOURCES += \
     icons.qrc
 RC_ICONS += pdf.ico
+
+#win32:QMAKE_CXXFLAGS +=/MP
+

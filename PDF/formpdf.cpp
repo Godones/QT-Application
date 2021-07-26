@@ -30,6 +30,7 @@ bool FormPdf::loadpdf()
         pdfdoc->setRenderHint(Poppler::Document::Antialiasing);
         pdfdoc->setRenderHint(Poppler::Document::TextAntialiasing);
         pdfdoc->setRenderHint(Poppler::Document::ThinLineShape);
+
         currentpage = 0;
         fitpageshow();
         setWindowTitle(Pdfname);
@@ -46,7 +47,7 @@ void FormPdf::fitwindowshow()
     QSize size = ui->scrollArea->size();
     QSize pagesize = pdfdoc->page(currentpage)->pageSize();
     float scale =(float) size.width()/ pagesize.width();
-    currentshow = pdfdoc->page(currentpage)->renderToImage(72*scale,72*scale,0,pagesize.width()*scale,pagesize.height()*scale);
+    currentshow = pdfdoc->page(currentpage)->renderToImage(72*scale,72*scale,0,currentpage,pagesize.width()*scale,pagesize.height()*scale);
     ui->label->setPixmap(QPixmap::fromImage(currentshow));
 }
 
@@ -75,7 +76,7 @@ void FormPdf::nextview()
         QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
         currentshow = pdfdoc->page(currentpage)->renderToImage(72,72,0,currentpage,size.width(),size.height());
         ui->label->setPixmap(QPixmap::fromImage(currentshow));
-        fitwindowshow();
+        fitpageshow();
     }
     else return;
 }
@@ -86,7 +87,7 @@ void FormPdf::preview()
         currentpage -=1;
         currentshow = pdfdoc->page(currentpage)->renderToImage();
         ui->label->setPixmap(QPixmap::fromImage(currentshow));
-        fitwindowshow();
+        fitpageshow();
     }
     else return;
 }
@@ -97,7 +98,7 @@ void FormPdf::located(int num)
         currentpage = num;
         currentshow = pdfdoc->page(num)->renderToImage();
         ui->label->setPixmap(QPixmap::fromImage(currentshow));
-        fitwindowshow();
+        fitpageshow();
     }
 }
 
