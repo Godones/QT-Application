@@ -15,6 +15,7 @@ SOURCES += \
     formpdf.cpp \
     main.cpp \
     mainwindow.cpp \
+    mygraphics.cpp \
     pdftable.cpp \
     showpdfform.cpp
 
@@ -22,6 +23,7 @@ HEADERS += \
     allpageshow.h \
     formpdf.h \
     mainwindow.h \
+    mygraphics.h \
     pdftable.h \
     showpdfform.h
 

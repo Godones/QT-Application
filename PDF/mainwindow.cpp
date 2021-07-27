@@ -274,3 +274,17 @@ void MainWindow::on_mdiArea_subWindowActivated(QMdiSubWindow *arg1)
     else setActionTF(false);
 }
 
+
+void MainWindow::on_allpageaction_triggered()
+{
+    //切换模式
+    //打开pdf文件
+    QString filepath = QFileDialog::getOpenFileName(this,"","",tr("pdf(*.pdf)"));//打开pdf文件
+
+    //打开pdf并展示
+    AllPageShow * pdf = new AllPageShow(ui->mdiArea);//子页面
+    pdf->load(filepath);
+    ui->mdiArea->addSubWindow(pdf);
+    pdf->show();
+}
+

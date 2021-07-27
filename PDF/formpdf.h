@@ -28,7 +28,7 @@ public:
     int currentpage;//当前页面
     Poppler::Document *pdfdoc ;
     bool loadpdf();
-    void loadpdf(QPainter *painter);
+
     void fitwindowshow();
     void fitpageshow();
     void scale(int factor);

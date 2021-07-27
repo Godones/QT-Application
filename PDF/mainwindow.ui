@@ -101,6 +101,7 @@
    <addaction name="nextpageaction"/>
    <addaction name="fitaction"/>
    <addaction name="fitwindowsaction"/>
+   <addaction name="allpageaction"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
    <attribute name="dockWidgetArea">
@@ -217,6 +218,15 @@
    </property>
    <property name="text">
     <string>适合窗口</string>
+   </property>
+  </action>
+  <action name="allpageaction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/change.png</normaloff>:/icons/icons/change.png</iconset>
+   </property>
+   <property name="text">
+    <string>切换模式</string>
    </property>
   </action>
  </widget>

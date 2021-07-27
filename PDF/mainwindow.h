@@ -13,7 +13,8 @@
 #include<QMdiSubWindow>
 #include<QSlider>
 #include<pdftable.h>
-
+#include"allpageshow.h"
+#include"mygraphics.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -69,6 +70,8 @@ private slots:
     void on_fitwindowsaction_triggered();
 
     void on_mdiArea_subWindowActivated(QMdiSubWindow *arg1);
+
+    void on_allpageaction_triggered();
 
 private:
     Ui::MainWindow *ui;
