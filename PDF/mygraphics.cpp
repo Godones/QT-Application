@@ -11,10 +11,6 @@ Mygraphics::Mygraphics(QWidget *parent) : QGraphicsView(parent)
 void Mygraphics::scrollContentsBy(int dx, int dy)
 {
     //滚动条事件
-    qDebug()<<dx<<" "<<dy;
-    QScrollBar *temo =  QGraphicsView::verticalScrollBar();
-    qDebug()<<temo->value();
-    qDebug()<<temo->x()<<" "<<temo->y();
     QGraphicsView::scrollContentsBy(dx,dy);
     emit updatePDF();
 }
