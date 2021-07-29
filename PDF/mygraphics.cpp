@@ -1,7 +1,7 @@
 #include "mygraphics.h"
 #include<QtDebug>
 #include<QScrollBar>
-
+#include<qmath.h>
 
 Mygraphics::Mygraphics(QWidget *parent) : QGraphicsView(parent)
 {
@@ -11,8 +11,11 @@ Mygraphics::Mygraphics(QWidget *parent) : QGraphicsView(parent)
 void Mygraphics::scrollContentsBy(int dx, int dy)
 {
     //滚动条事件
+//    qDebug()<<dx<<" "<<dy<<"!!!!";
+    if(qAbs(dy)>=75){
+        emit updatePDF();
+    }
     QGraphicsView::scrollContentsBy(dx,dy);
-    emit updatePDF();
 }
 /*
 void Mygraphics::wheelEvent(QWheelEvent *event)

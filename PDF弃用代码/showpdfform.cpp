@@ -96,7 +96,7 @@ void showpdfForm::init(QString &path)
         name.push_back(path);
     }
     QFileInfo info(path);
-    setWindowTitle(info.fileName());
+//    setWindowTitle(info.fileName());
     createtable();
 }
 

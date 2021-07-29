@@ -8,19 +8,21 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setCentralWidget(ui->mdiArea);
+    setCentralWidget(ui->tabWidget);
 
+    //设置应用标题
     setWindowTitle("GodPDF");
     Locatedpage = new QSpinBox(this);
     Locatedpage->setMinimum(0);
     ui->toolBar->addSeparator();
+
     connect(Locatedpage,SIGNAL(valueChanged(int)),this,SLOT(Locatedpage_valchanged(int)));
 
     Scaling = new QSlider(Qt::Horizontal);
     //设置滑动条控件的最小值
-    Scaling->setMinimum(0);
+    Scaling->setMinimum(20);
      //设置滑动条控件的最大值
-     Scaling->setMaximum(500);
+     Scaling->setMaximum(200);
      //设置滑动条控件的值
     Scaling->setValue(100);
     Scaling->setMaximumWidth(100);
@@ -30,15 +32,23 @@ MainWindow::MainWindow(QWidget *parent)
 
      //信号和槽 当滑动条的值发生改变时，即产生一个valueChanged(int)信号 设置QLineEdit控件的显示文本
     connect(Scaling, SIGNAL(valueChanged(int)), this, SLOT(resetScale(int)));
+
     ui->toolBar->addWidget(Locatedpage);
     ui->toolBar->addSeparator();
     ui->toolBar->addWidget(Scaling);
-    ui->mdiArea->setViewMode(QMdiArea::TabbedView);//多页显示
 
-    ui->mdiArea->setTabsClosable(true);//打开关闭按钮
+
+    //Page有关闭按钮，可被关闭
+    ui->tabWidget->clear();
+    ui->tabWidget->setTabsClosable(true);
+
+    //一开始将打开文件按钮设置不可使用
     ui->addfileaction->setEnabled(false);
 
-    setActionTF(false);
+
+
+    //设置按钮可见性
+//    setActionTF(false);
 }
 
 MainWindow::~MainWindow()
@@ -49,14 +59,16 @@ MainWindow::~MainWindow()
 void MainWindow::openpdf(QString filepath)
 {
     //打开pdf并展示
-    FormPdf * pdf = new FormPdf(ui->mdiArea);//子页面
+    FormPdf * pdf = new FormPdf(this);//子页面
     pdf->setProperty("type","page");
 
     //加载文件
     pdf->PdfPath = filepath;
     pdf->Pdfname = getfinaldirname(filepath);
    if(pdf->loadpdf()){
-       ui->mdiArea->addSubWindow(pdf);pdf->show();
+       ui->tabWidget->addTab(pdf,pdf->Pdfname);
+       ui->tabWidget->setCurrentWidget(pdf);
+       pdf->show();
    }
    else{
        QMessageBox::information(this,"提示","文件打开失败,可能已损坏!");
@@ -79,9 +91,11 @@ void MainWindow::isbelongQt(QString &dir)
 void MainWindow::showpdftable()
 {
     //QTableWidget方案
-    showpdfForm *showform = new showpdfForm(ui->mdiArea);
+    //不用
+    showpdfForm *showform = new showpdfForm(this);
     showform->setProperty("type","Table");
-    ui->mdiArea->addSubWindow(showform);
+    ui->tabWidget->addTab(showform,getfinaldirname(Rootpath));
+    ui->tabWidget->setCurrentWidget(showform);
     showform->init(Rootpath);
     showform->show();
     connect(showform,&showpdfForm::sentfilepath,this,&MainWindow::showpdfslot);//连接子窗口与父窗口
@@ -92,8 +106,10 @@ void MainWindow::showpdftable()
 
 void MainWindow::showtable(){
     //启用Qlistwidget方案
-    PdfTable *showtablePDF = new PdfTable(ui->mdiArea);
-    ui->mdiArea->addSubWindow(showtablePDF);
+    PdfTable *showtablePDF = new PdfTable(this);
+    showtablePDF->setProperty("type","List");
+    ui->tabWidget->addTab(showtablePDF,getfinaldirname(Rootpath));
+    ui->tabWidget->setCurrentWidget(showtablePDF);
     showtablePDF->init_read(Rootpath);
     showtablePDF->show();
 
@@ -166,7 +182,6 @@ void MainWindow::on_openoneaction_triggered()
 }
 
 
-
 QString MainWindow::getfinaldirname(const QString &fulldirname)
 {
     //返回文件名
@@ -201,9 +216,9 @@ void MainWindow::on_addfileaction_triggered()
 void MainWindow::on_fitaction_triggered()
 {
     //适合页面显示
-   QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
+   QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
    if(subwindow==nullptr)return;
-   FormPdf *temp =(FormPdf*) subwindow->widget();
+   FormPdf *temp =(FormPdf*) subwindow;
    if(temp->property("type")=="page") temp->fitpageshow();
 
 }
@@ -211,17 +226,17 @@ void MainWindow::on_fitaction_triggered()
 void MainWindow::on_fitwindowsaction_triggered()
 {
     //适合窗口显示
-    QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
+    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
     if(subwindow==nullptr)return;
-    FormPdf *temp =(FormPdf*) subwindow->widget();
+    FormPdf *temp =(FormPdf*) subwindow;
     if(temp->property("type")=="page") temp->fitwindowshow();
 }
 
 void MainWindow::on_nextpageaction_triggered()
 {
     //下一页
-    QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
-    FormPdf *temp =(FormPdf*) subwindow->widget();
+    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
+    FormPdf *temp =(FormPdf*) subwindow;
     if(temp->property("type")=="page") temp->nextview();
 }
 
@@ -229,27 +244,34 @@ void MainWindow::on_nextpageaction_triggered()
 void MainWindow::on_prepageaction_triggered()
 {
 //    上一页
-    QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
-    FormPdf *temp =(FormPdf*) subwindow->widget();
+    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
+    FormPdf *temp =(FormPdf*) subwindow;
     if(temp->property("type")=="page") temp->preview();
 }
 
 void MainWindow::Locatedpage_valchanged(int num)
 {
     //定位到某一页
-    QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
+    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
     if(subwindow==nullptr)return;
-    FormPdf *temp =(FormPdf*) subwindow->widget();
+    FormPdf *temp =(FormPdf*) subwindow;
     if(temp->property("type")=="page") temp->located(num-1);
 }
 
 void MainWindow::resetScale(int scale)
 {
     //QSlider滑动缩放
-    QMdiSubWindow *subwindow = ui->mdiArea->activeSubWindow();//获取活动窗口
+    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
     if(subwindow==nullptr)return;
-    FormPdf *temp =(FormPdf*) subwindow->widget();
+    FormPdf *temp =(FormPdf*) subwindow;
     if(temp->property("type")=="page") temp->scale(scale);
+
+    AllPageShow *show = static_cast<AllPageShow*>(subwindow);
+    if(show->property("type")=="Mulpage"){
+        qDebug()<<"Mulpage";
+        show->setscale(scale);
+    }
+
 }
 
 void MainWindow::setActionTF(bool arg)
@@ -268,10 +290,13 @@ void MainWindow::setActionTF(bool arg)
 void MainWindow::on_mdiArea_subWindowActivated(QMdiSubWindow *arg1)
 {
     //切换子窗口时发射
+    //设置按钮可见性
     if(arg1==nullptr)return;
-    FormPdf *temp =(FormPdf*) arg1->widget();
-    if(temp->property("type")=="page") setActionTF(true);
-    else setActionTF(false);
+//    FormPdf *temp =(FormPdf*) arg1->widget();
+//    if(temp->property("type")=="page") setActionTF(true);
+//    else setActionTF(false);
+
+
 }
 
 
@@ -280,11 +305,17 @@ void MainWindow::on_allpageaction_triggered()
     //切换模式
     //打开pdf文件
     QString filepath = QFileDialog::getOpenFileName(this,"","",tr("pdf(*.pdf)"));//打开pdf文件
-
     //打开pdf并展示
-    AllPageShow * pdf = new AllPageShow(ui->mdiArea);//子页面
-    pdf->load(filepath);
-    ui->mdiArea->addSubWindow(pdf);
+    ui->treeWidget->clear();
+    if(filepath.isEmpty())return;
+    AllPageShow * pdf = new AllPageShow(this);//子页面
+
+    pdf->setProperty("type","Mulpage");
+    pdf->load(filepath,ui->treeWidget);
+
+    ui->tabWidget->addTab(pdf,getfinaldirname(filepath));
+    ui->tabWidget->setCurrentWidget(pdf);
     pdf->show();
+
 }
 

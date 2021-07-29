@@ -16,7 +16,9 @@
 #include<mygraphics.h>
 #include<QScrollBar>
 #include<QSize>
-
+#include<QDomDocument>
+#include<QDomElement>
+#include<QTreeWidget>
 
 namespace Ui {
 class AllPageShow;
@@ -29,30 +31,34 @@ class AllPageShow : public QWidget
 public:
     explicit AllPageShow(QWidget *parent = nullptr);
     ~AllPageShow();
-
-    void load(QString pdfpath);
+    QString Pdfname;
+    void load(QString pdfpath,QTreeWidget*);
 
     void updatePDF();
     void fitwindowshow();
     void fitpageshow();
     void getRect(int& ,int&);
-    QImage getImage(int index,float scale = 1.0);
+    QImage getImage(int index);
+    void setscale(int _scale);
 
-
+    void get_xml_Marks(Poppler::Document* pdfdoc,QTreeWidget* );
+    void read_xml(QDomNode, QTreeWidgetItem*,QTreeWidget*  );
 private:
     Ui::AllPageShow *ui;
     QVector<Poppler::Page *> allpage;//存储所有页面
     QString Pdfpath;//存储PDF路径
-    QStandardItemModel *model;
     QSize size;
+    bool IsFullRender;//是否全部渲染完成
 
 
+    int scale;
     int minRender,maxRender;
     QGraphicsScene *myscene;
-    const int onceRender = 4;//每次渲染视图中央的页面上下三个
+    const int onceRender = 1;//每次渲染视图中央的页面上下三个
     const int firtRender = 3;
     void init_set();
 
+    void Silderchange();
 
 };
 

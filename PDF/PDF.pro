@@ -1,6 +1,6 @@
 QT       += core gui
 
-
+QT +=xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,23 +16,20 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mygraphics.cpp \
-    pdftable.cpp \
-    showpdfform.cpp
+    pdftable.cpp
 
 HEADERS += \
     allpageshow.h \
     formpdf.h \
     mainwindow.h \
     mygraphics.h \
-    pdftable.h \
-    showpdfform.h
+    pdftable.h
 
 FORMS += \
     allpageshow.ui \
     formpdf.ui \
     mainwindow.ui \
-    pdftable.ui \
-    showpdfform.ui
+    pdftable.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

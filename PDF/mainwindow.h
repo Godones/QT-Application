@@ -16,6 +16,7 @@
 #include"allpageshow.h"
 #include"mygraphics.h"
 
+#include<QTabWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

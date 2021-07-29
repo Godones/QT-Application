@@ -64,11 +64,11 @@ void FormPdf::scale(int factor)
 {
     float factor_ = (float)factor/100;
     QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
-//    currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
+    currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
 
-    QImage newimage = currentshow.scaled(size.width()*factor_,size.height()*factor_,Qt::IgnoreAspectRatio,Qt::FastTransformation);
+//    QImage newimage = currentshow.scaled(size.width()*factor_,size.height()*factor_,Qt::IgnoreAspectRatio,Qt::FastTransformation);
 
-    ui->label->setPixmap(QPixmap::fromImage(newimage));//显示
+    ui->label->setPixmap(QPixmap::fromImage(currentshow));//显示
 
 }
 
