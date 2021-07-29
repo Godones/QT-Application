@@ -25,8 +25,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>782</width>
-         <height>570</height>
+         <width>774</width>
+         <height>559</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -139,7 +139,7 @@
   </widget>
   <action name="overlookaction">
    <property name="icon">
-    <iconset resource="icons.qrc">
+    <iconset>
      <normaloff>:/icons/icons/循环.png</normaloff>:/icons/icons/循环.png</iconset>
    </property>
    <property name="text">
@@ -149,7 +149,7 @@
   <action name="bigeraction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/放大.png</normaloff>:/icons/icons/放大.png</iconset>
+     <normaloff>:/new/prefix1/icons/biger.png</normaloff>:/new/prefix1/icons/biger.png</iconset>
    </property>
    <property name="text">
     <string>放大</string>
@@ -158,7 +158,7 @@
   <action name="smalleraction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/缩小.png</normaloff>:/icons/icons/缩小.png</iconset>
+     <normaloff>:/new/prefix1/icons/smaller.png</normaloff>:/new/prefix1/icons/smaller.png</iconset>
    </property>
    <property name="text">
     <string>缩小</string>
@@ -167,7 +167,7 @@
   <action name="realsizeaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/放大镜.png</normaloff>:/icons/icons/放大镜.png</iconset>
+     <normaloff>:/new/prefix1/icons/origin.png</normaloff>:/new/prefix1/icons/origin.png</iconset>
    </property>
    <property name="text">
     <string>实际大小</string>
@@ -176,7 +176,7 @@
   <action name="fitwideaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/宽度.png</normaloff>:/icons/icons/宽度.png</iconset>
+     <normaloff>:/new/prefix1/icons/wide.png</normaloff>:/new/prefix1/icons/wide.png</iconset>
    </property>
    <property name="text">
     <string>适合宽度</string>
@@ -185,7 +185,7 @@
   <action name="fitheightaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/高度.png</normaloff>:/icons/icons/高度.png</iconset>
+     <normaloff>:/new/prefix1/icons/high.png</normaloff>:/new/prefix1/icons/high.png</iconset>
    </property>
    <property name="text">
     <string>适合高度</string>
@@ -197,7 +197,7 @@
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/浮动窗口.png</normaloff>:/icons/icons/浮动窗口.png</iconset>
+     <normaloff>:/new/prefix1/icons/float.png</normaloff>:/new/prefix1/icons/float.png</iconset>
    </property>
    <property name="text">
     <string>窗体浮动</string>
@@ -209,7 +209,7 @@
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/窗体.png</normaloff>:/icons/icons/窗体.png</iconset>
+     <normaloff>:/new/prefix1/icons/showleft.png</normaloff>:/new/prefix1/icons/showleft.png</iconset>
    </property>
    <property name="text">
     <string>隐藏窗体</string>
@@ -218,7 +218,7 @@
   <action name="exitaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/退出.png</normaloff>:/icons/icons/退出.png</iconset>
+     <normaloff>:/new/prefix1/icons/exit.png</normaloff>:/new/prefix1/icons/exit.png</iconset>
    </property>
    <property name="text">
     <string>退出</string>
@@ -227,7 +227,7 @@
   <action name="fitwindowsaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/适合大小.png</normaloff>:/icons/icons/适合大小.png</iconset>
+     <normaloff>:/new/prefix1/icons/fitsize.png</normaloff>:/new/prefix1/icons/fitsize.png</iconset>
    </property>
    <property name="text">
     <string>适合窗口</string>
@@ -236,7 +236,7 @@
   <action name="Unfolddotaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/展开.png</normaloff>:/icons/icons/展开.png</iconset>
+     <normaloff>:/new/prefix1/icons/unfold.png</normaloff>:/new/prefix1/icons/unfold.png</iconset>
    </property>
    <property name="text">
     <string>展开节点</string>
@@ -245,7 +245,7 @@
   <action name="addrepositoryaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/图片存储库.png</normaloff>:/icons/icons/图片存储库.png</iconset>
+     <normaloff>:/new/prefix1/icons/piclib.png</normaloff>:/new/prefix1/icons/piclib.png</iconset>
    </property>
    <property name="text">
     <string>新建存储库</string>
@@ -254,7 +254,7 @@
   <action name="addsubsectionaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/添加目录.png</normaloff>:/icons/icons/添加目录.png</iconset>
+     <normaloff>:/new/prefix1/icons/addsub.png</normaloff>:/new/prefix1/icons/addsub.png</iconset>
    </property>
    <property name="text">
     <string>添加分类</string>
@@ -263,7 +263,7 @@
   <action name="addfileaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/添加文件.png</normaloff>:/icons/icons/添加文件.png</iconset>
+     <normaloff>:/new/prefix1/icons/addfile.png</normaloff>:/new/prefix1/icons/addfile.png</iconset>
    </property>
    <property name="text">
     <string>添加图片</string>
@@ -275,7 +275,7 @@
   <action name="deletedotaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/删除.png</normaloff>:/icons/icons/删除.png</iconset>
+     <normaloff>:/new/prefix1/icons/delete.png</normaloff>:/new/prefix1/icons/delete.png</iconset>
    </property>
    <property name="text">
     <string>删除</string>
@@ -287,7 +287,7 @@
   <action name="openresposityaction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/打开.png</normaloff>:/icons/icons/打开.png</iconset>
+     <normaloff>:/new/prefix1/icons/open.png</normaloff>:/new/prefix1/icons/open.png</iconset>
    </property>
    <property name="text">
     <string>打开</string>
