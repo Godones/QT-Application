@@ -25,7 +25,9 @@ public:
 
     QString PdfPath;//每个页面是一个pdf文件
     QString Pdfname;
+
     int currentpage;//当前页面
+
     Poppler::Document *pdfdoc ;
     bool loadpdf();
 
@@ -36,6 +38,8 @@ public:
     void nextview();
     void preview();
     void located(int num);
+
+    int scaled;
 private:
 
     Ui::FormPdf *ui;

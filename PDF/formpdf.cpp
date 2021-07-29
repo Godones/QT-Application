@@ -18,12 +18,7 @@ FormPdf::~FormPdf()
 
 bool FormPdf::loadpdf()
 {
-
-
     pdfdoc = Poppler::Document::load(PdfPath);
-//    QRect mrect;//获取设备分辨率
-//    mrect =QGuiApplication::primaryScreen()->geometry();
-//    qDebug()<<Poppler::Document::availableRenderBackends();//获取渲染后端
 
     if(pdfdoc!=nullptr){
         pdfdoc->setRenderBackend(Poppler::Document::SplashBackend);
@@ -32,8 +27,8 @@ bool FormPdf::loadpdf()
         pdfdoc->setRenderHint(Poppler::Document::ThinLineShape);
 
         currentpage = 0;
+        scaled = 100;
         fitpageshow();
-        setWindowTitle(Pdfname);
         return true;
     }
     else return false;
@@ -63,45 +58,49 @@ void FormPdf::fitpageshow()
 void FormPdf::scale(int factor)
 {
     float factor_ = (float)factor/100;
+    scaled = factor;
     QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
     currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
-
-//    QImage newimage = currentshow.scaled(size.width()*factor_,size.height()*factor_,Qt::IgnoreAspectRatio,Qt::FastTransformation);
-
     ui->label->setPixmap(QPixmap::fromImage(currentshow));//显示
 
 }
 
 void FormPdf::nextview()
 {
+    //下一页
     if(currentpage<pdfdoc->numPages()-1) {
+
+        float factor_ = (float)scaled/100;
         currentpage +=1;
         QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
-        currentshow = pdfdoc->page(currentpage)->renderToImage(72,72,0,currentpage,size.width(),size.height());
+        currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
         ui->label->setPixmap(QPixmap::fromImage(currentshow));
-        fitpageshow();
     }
     else return;
 }
 
 void FormPdf::preview()
 {
+    //上一页
     if(currentpage>0) {
+        float factor_ = (float)scaled/100;
         currentpage -=1;
-        currentshow = pdfdoc->page(currentpage)->renderToImage();
+        QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
+        currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
         ui->label->setPixmap(QPixmap::fromImage(currentshow));
-        fitpageshow();
     }
     else return;
 }
 
 void FormPdf::located(int num)
 {
+    //定位
     if(num>=0&&num<pdfdoc->numPages()){
+        float factor_ = (float)scaled/100;
         currentpage = num;
-        currentshow = pdfdoc->page(num)->renderToImage();
+        QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
+        currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
         ui->label->setPixmap(QPixmap::fromImage(currentshow));
-        fitpageshow();
     }
 }
 

@@ -70,9 +70,10 @@ private slots:
 
     void on_fitwindowsaction_triggered();
 
-    void on_mdiArea_subWindowActivated(QMdiSubWindow *arg1);
 
     void on_allpageaction_triggered();
+
+    void on_tabWidget_currentChanged(int index);
 
 private:
     Ui::MainWindow *ui;
@@ -84,5 +85,7 @@ private:
 
     QString getfinaldirname(const QString &fulldirname);
     void showtable();
+    void get_xml_Marks(Poppler::Document *pdfdoc);
+    void read_xml(QDomNode node, QTreeWidgetItem *parent);
 };
 #endif // MAINWINDOW_H

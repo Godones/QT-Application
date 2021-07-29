@@ -31,32 +31,39 @@ class AllPageShow : public QWidget
 public:
     explicit AllPageShow(QWidget *parent = nullptr);
     ~AllPageShow();
-    QString Pdfname;
-    void load(QString pdfpath,QTreeWidget*);
+
+    bool load(QString pdfpath);
 
     void updatePDF();
-    void fitwindowshow();
+
     void fitpageshow();
-    void getRect(int& ,int&);
+
     QImage getImage(int index);
+
     void setscale(int _scale);
 
-    void get_xml_Marks(Poppler::Document* pdfdoc,QTreeWidget* );
-    void read_xml(QDomNode, QTreeWidgetItem*,QTreeWidget*  );
+    void located(int index);
+
+    QString Pdfpath;//存储PDF路径
+
+    int currentpage;//当前所在页面
+
 private:
     Ui::AllPageShow *ui;
     QVector<Poppler::Page *> allpage;//存储所有页面
-    QString Pdfpath;//存储PDF路径
-    QSize size;
-    bool IsFullRender;//是否全部渲染完成
 
+
+    QSize size;
 
     int scale;
     int minRender,maxRender;
+
     QGraphicsScene *myscene;
+
     const int onceRender = 1;//每次渲染视图中央的页面上下三个
+
     const int firtRender = 3;
-    void init_set();
+
 
     void Silderchange();
 
