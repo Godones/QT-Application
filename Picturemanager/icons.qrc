@@ -1,22 +1,20 @@
 <RCC>
-    <qresource prefix="/icons">
-        <file>icons/窗体.png</file>
-        <file>icons/放大.png</file>
-        <file>icons/放大镜.png</file>
-        <file>icons/浮动窗口.png</file>
-        <file>icons/高度.png</file>
-        <file>icons/宽度.png</file>
-        <file>icons/删除.png</file>
-        <file>icons/适合大小.png</file>
-        <file>icons/适合宽度.png</file>
-        <file>icons/缩小.png</file>
-        <file>icons/添加目录.png</file>
-        <file>icons/添加文件.png</file>
-        <file>icons/图片存储库.png</file>
-        <file>icons/图片管理.png</file>
-        <file>icons/退出.png</file>
-        <file>icons/循环.png</file>
-        <file>icons/展开.png</file>
-        <file>icons/打开.png</file>
+    <qresource prefix="/new/prefix1">
+        <file>icons/showleft.png</file>
+        <file>icons/open.png</file>
+        <file>icons/biger.png</file>
+        <file>icons/origin.png</file>
+        <file>icons/float.png</file>
+        <file>icons/high.png</file>
+        <file>icons/wide.png</file>
+        <file>icons/delete.png</file>
+        <file>icons/fitsize.png</file>
+        <file>icons/smaller.png</file>
+        <file>icons/addsub.png</file>
+        <file>icons/addfile.png</file>
+        <file>icons/piclib.png</file>
+        <file>icons/exit.png</file>
+        <file>icons/xunhuan.png</file>
+        <file>icons/unfold.png</file>
     </qresource>
 </RCC>
