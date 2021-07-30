@@ -15,7 +15,7 @@
 #include<pdftable.h>
 #include"allpageshow.h"
 #include"mygraphics.h"
-
+#include"tabstyle.h"
 #include<QTabWidget>
 
 QT_BEGIN_NAMESPACE
@@ -97,5 +97,6 @@ private:
     void read_xml(QDomNode node, QTreeWidgetItem *parent);
 
 
+    void AdjustTabWidth();
 };
 #endif // MAINWINDOW_H

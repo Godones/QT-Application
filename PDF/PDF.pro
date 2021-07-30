@@ -16,14 +16,16 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mygraphics.cpp \
-    pdftable.cpp
+    pdftable.cpp \
+    tabstyle.cpp
 
 HEADERS += \
     allpageshow.h \
     formpdf.h \
     mainwindow.h \
     mygraphics.h \
-    pdftable.h
+    pdftable.h \
+    tabstyle.h
 
 FORMS += \
     allpageshow.ui \
