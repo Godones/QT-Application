@@ -32,7 +32,7 @@ public:
     explicit AllPageShow(QWidget *parent = nullptr);
     ~AllPageShow();
 
-    bool load(QString pdfpath);
+    bool load();
 
     void updatePDF();
 
@@ -48,6 +48,15 @@ public:
 
     int currentpage;//当前所在页面
 
+    int scale;//缩放因子
+
+    int numpages;
+
+    Poppler::Document *pdfdoc ;
+
+signals:
+    void pagechanged(int currentpage);
+
 private:
     Ui::AllPageShow *ui;
     QVector<Poppler::Page *> allpage;//存储所有页面
@@ -55,7 +64,7 @@ private:
 
     QSize size;
 
-    int scale;
+
     int minRender,maxRender;
 
     QGraphicsScene *myscene;

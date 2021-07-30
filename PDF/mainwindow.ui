@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>867</width>
-    <height>628</height>
+    <width>1004</width>
+    <height>685</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>867</width>
+     <width>1004</width>
      <height>26</height>
     </rect>
    </property>
@@ -57,6 +57,7 @@
     </property>
     <addaction name="fitaction"/>
     <addaction name="fitwindowsaction"/>
+    <addaction name="allpageaction"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -96,13 +97,13 @@
    <addaction name="openfileaction"/>
    <addaction name="createlibaction"/>
    <addaction name="addfileaction"/>
+   <addaction name="allpageaction"/>
    <addaction name="exitaction"/>
    <addaction name="separator"/>
    <addaction name="prepageaction"/>
    <addaction name="nextpageaction"/>
    <addaction name="fitaction"/>
    <addaction name="fitwindowsaction"/>
-   <addaction name="allpageaction"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget_2">
    <property name="features">

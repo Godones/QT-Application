@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     //设置应用标题
     setWindowTitle("GodPDF");
     Locatedpage = new QSpinBox(this);
+
     Locatedpage->setMinimum(0);
     ui->toolBar->addSeparator();
 
@@ -35,6 +36,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(Scaling, SIGNAL(valueChanged(int)), this, SLOT(resetScale(int)));
 
     ui->toolBar->addWidget(Locatedpage);
+
+    pagenums = new QLabel();
+    ui->toolBar->addSeparator();
+    ui->toolBar->addWidget(pagenums);
+
     ui->toolBar->addSeparator();
     ui->toolBar->addWidget(Scaling);
 
@@ -44,17 +50,34 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tabWidget->setTabsClosable(true);
 
     //一开始将打开文件按钮设置不可使用
-    ui->addfileaction->setEnabled(false);
+
     ui->treeWidget->setWindowTitle("书签");
 
-
     //设置按钮可见性
-//    setActionTF(false);
+    setActionTF();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+void MainWindow::setActionTF()
+{
+    ui->nextpageaction->setEnabled(false);
+    ui->prepageaction->setEnabled(false);
+    ui->addfileaction->setEnabled(false);
+    ui->fitaction->setEnabled(false);
+    ui->fitwindowsaction->setEnabled(false);
+    ui->allpageaction->setEnabled(false);
+    Locatedpage->setEnabled(false);
+    Scaling->setEnabled(false);
+    Locatedpage->setEnabled(false);
+    pagenums->setEnabled(false);
+
+    ui->dockWidget_2->setVisible(false);//初始界面dock栏不可见
+
 }
 
 void MainWindow::openpdf(QString filepath)
@@ -69,15 +92,25 @@ void MainWindow::openpdf(QString filepath)
 
     pdf->setProperty("type","Mulpage");
 
-   if(pdf->load(filepath)){
+    pdf->Pdfpath = filepath;
 
+   if(pdf->load()){
+
+       ui->treeWidget->clear();//清空标签
        get_xml_Marks(Poppler::Document::load(filepath));
+       ui->treeWidget->expandAll();
+
+       ui->dockWidget_2->setVisible(true);
 
        ui->tabWidget->addTab(pdf,getfinaldirname(filepath));
 
        ui->tabWidget->setCurrentWidget(pdf);
 
        pdf->Pdfpath = filepath;
+
+       pagenums->setText(QString("%1").arg(pdf->numpages));
+
+       Locatedpage->setMaximum(pdf->numpages-1);
 
    }
    else{
@@ -118,7 +151,6 @@ void MainWindow::on_openfileaction_triggered()
     //更新Rootpath
     Rootpath = QFileDialog::getExistingDirectory(this);
     if(Rootpath.isEmpty())return;
-//    showpdftable();
     showtable();
 }
 
@@ -139,6 +171,8 @@ void MainWindow::inputresposityname(QString& resposity)
         resposity = text;
     delete input;
 }
+
+
 
 
 void MainWindow::on_createlibaction_triggered()
@@ -189,7 +223,6 @@ void MainWindow::on_addfileaction_triggered()
     //添加pdf文件
     //添加图片文件，会将图片移动到此此仓库下
     //过滤器
-    //
 
     QString filter = "pdf(*.pdf)";
     QStringList filenames = QFileDialog::getOpenFileNames(this,
@@ -246,6 +279,8 @@ void MainWindow::on_prepageaction_triggered()
 void MainWindow::Locatedpage_valchanged(int num)
 {
     //定位到某一页
+    qDebug()<<"LOin";
+
     QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
     if(subwindow==nullptr)return;
 
@@ -266,34 +301,85 @@ void MainWindow::resetScale(int scale)
     //QSlider滑动缩放
     QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
     if(subwindow==nullptr)return;
+
     FormPdf *temp =(FormPdf*) subwindow;
     if(temp->property("type")=="page") temp->scale(scale);
 
     AllPageShow *show = static_cast<AllPageShow*>(subwindow);
     if(show->property("type")=="Mulpage"){
-        qDebug()<<"Mulpage";
         show->setscale(scale);
     }
 
 }
 
-void MainWindow::setActionTF(bool arg)
-{
-    //设置工具栏按钮的可用性
-    ui->nextpageaction->setEnabled(arg);
-    ui->prepageaction->setEnabled(arg);
-    ui->addfileaction->setEnabled(!arg);
-    ui->fitaction->setEnabled(arg);
-    ui->fitwindowsaction->setEnabled(arg);
-    Locatedpage->setEnabled(arg);
-    Scaling->setEnabled(arg);
-}
-
-
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     //切换子窗口时发射
     //设置按钮可见性
+    qDebug()<<"inT"<<ui->tabWidget->count();
+
+    if(ui->tabWidget->count()==0){
+        setActionTF();
+        return;
+    }
+    QWidget *subwindow = ui->tabWidget->widget(index);//获取活动窗口
+    if(subwindow==nullptr)return;
+    QString type = subwindow->property("type").toString();
+    if(type=="page"){
+        FormPdf *lastpdf = static_cast<FormPdf*>(subwindow);
+        ui->nextpageaction->setEnabled(true);
+        ui->prepageaction->setEnabled(true);
+        ui->addfileaction->setEnabled(false);
+        ui->fitaction->setEnabled(true);
+        ui->fitwindowsaction->setEnabled(true);
+        ui->allpageaction->setEnabled(true);
+
+        Locatedpage->setEnabled(true);
+        Scaling->setEnabled(true);
+        pagenums->setEnabled(true);
+        Locatedpage->setMaximum(lastpdf->numpages-1);
+        pagenums->setText(QString("%1").arg(lastpdf->numpages));
+
+        ui->treeWidget->clear();
+        get_xml_Marks(lastpdf->pdfdoc);
+        ui->dockWidget_2->setVisible(true);
+        ui->treeWidget->expandAll();
+
+    }
+    else if(type=="Mulpage"){
+        AllPageShow *lastpdf = static_cast<AllPageShow*>(subwindow);
+        ui->nextpageaction->setEnabled(false);
+        ui->prepageaction->setEnabled(false);
+        ui->allpageaction->setEnabled(true);
+        ui->addfileaction->setEnabled(false);
+        ui->fitaction->setEnabled(false);
+        ui->fitwindowsaction->setEnabled(false);
+        Locatedpage->setEnabled(true);
+        Scaling->setEnabled(true);
+
+        pagenums->setEnabled(true);
+
+        Locatedpage->setMaximum(lastpdf->numpages-1);
+        pagenums->setText(QString("%1").arg(lastpdf->numpages));
+
+        ui->treeWidget->clear();
+        get_xml_Marks(lastpdf->pdfdoc);
+        ui->dockWidget_2->setVisible(true);
+        ui->treeWidget->expandAll();
+    }
+    else {
+        ui->nextpageaction->setEnabled(false);
+        ui->prepageaction->setEnabled(false);
+        ui->addfileaction->setEnabled(true);
+        ui->fitaction->setEnabled(false);
+        ui->fitwindowsaction->setEnabled(false);
+        Locatedpage->setEnabled(false);
+        Scaling->setEnabled(false);
+        Locatedpage->setEnabled(false);
+        pagenums->setEnabled(false);
+        ui->dockWidget_2->setVisible(false);
+
+    }
 
 }
 
@@ -301,6 +387,9 @@ void MainWindow::on_allpageaction_triggered()
 {
     //切换模式
     //单页还是多页显示
+    qDebug("inA");
+
+
     QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
     if(subwindow==nullptr)return;
 
@@ -318,23 +407,23 @@ void MainWindow::on_allpageaction_triggered()
         delete lastpdf;
         ui->tabWidget->insertTab(index,pdf,namepdf);
         ui->tabWidget->setCurrentWidget(pdf);
+
+
     }
     else{
 
         FormPdf *lastpdf = static_cast<FormPdf*>(subwindow);
         AllPageShow * pdf = new AllPageShow(this);//子页面
         pdf->setProperty("type","Mulpage");
-        pdf->load(lastpdf->PdfPath);
-        pdf->located(lastpdf->currentpage);
-
-        pdf->Pdfpath = lastpdf->PdfPath;
+        pdf->Pdfpath = lastpdf->PdfPath;//设置路径
+        pdf->load();//加载
+        pdf->located(lastpdf->currentpage);//定位
 
         int index = ui->tabWidget->currentIndex();
         ui->tabWidget->removeTab(index);
-        delete lastpdf;
-        ui->tabWidget->addTab(pdf,getfinaldirname(pdf->Pdfpath));
-        ui->tabWidget->setCurrentWidget(pdf);
-
+        delete lastpdf;//删除分页
+        ui->tabWidget->insertTab(index,pdf,getfinaldirname(pdf->Pdfpath));//插入分页
+        ui->tabWidget->setCurrentWidget(pdf);//显示当前页
 
     }
 
@@ -373,10 +462,17 @@ void MainWindow::read_xml(QDomNode node, QTreeWidgetItem * parent)
         QDomElement e = node.toElement();
         if (!e.isNull())
         {
-           qDebug() << e.tagName()<<e.attribute("Destination"); // the node really is an element.
+//           qDebug() << e.tagName()<<e.attribute("Destination"); // the node really is an element.
 
            QTreeWidgetItem *item  = new QTreeWidgetItem();
-           item->setData(0,Qt::UserRole,e.attribute("Destination"));
+           QString info = e.attribute(("Destination"));
+           QString address="";
+           for(int i=2;i<info.size();i++){
+               if(info[i]==';')break;
+               address +=info[i];
+           }
+           item->setData(0,Qt::UserRole,address.toInt());//存储位置
+
            item->setText(0,e.tagName());
            if(parent==nullptr)
                 ui->treeWidget ->addTopLevelItem(item);
@@ -393,4 +489,34 @@ void MainWindow::read_xml(QDomNode node, QTreeWidgetItem * parent)
 }
 
 
+
+
+void MainWindow::on_tabWidget_tabCloseRequested(int index)
+{
+    //关闭页面
+    ui->tabWidget->widget(index)->close();
+
+}
+
+void MainWindow::setLocatedpage(int index)
+{
+    //设置当前页面的值
+    Locatedpage->setValue(index);
+}
+
+
+void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
+{
+    //点击书签，跳转到指定位置
+    int index = item->data(0,Qt::UserRole).toInt();
+    QWidget * subwindow = ui->tabWidget->currentWidget();
+    if(subwindow->property("type")=="page"){
+        FormPdf *lastpdf = static_cast<FormPdf*>(subwindow);
+        lastpdf->located(index);
+    }
+    else{
+        AllPageShow * lastpdf  = static_cast<AllPageShow*>(subwindow);
+        lastpdf->located(index);
+    }
+}
 

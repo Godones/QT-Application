@@ -15,6 +15,7 @@ PdfTable::PdfTable(QWidget *parent) :
 PdfTable::~PdfTable()
 {
     delete ui;
+    qDebug()<<"TAbleDelete";
 }
 
 void PdfTable::connectSlot()

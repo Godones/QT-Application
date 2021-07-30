@@ -11,7 +11,7 @@ Mygraphics::Mygraphics(QWidget *parent) : QGraphicsView(parent)
 void Mygraphics::scrollContentsBy(int dx, int dy)
 {
     //滚动条事件
-//    qDebug()<<dx<<" "<<dy<<"!!!!";
+    qDebug()<<dx<<" "<<dy<<"!!!!";
     if(qAbs(dy)>=75){
         emit updatePDF();
     }

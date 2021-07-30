@@ -19,18 +19,19 @@ AllPageShow::AllPageShow(QWidget *parent) :
 AllPageShow::~AllPageShow()
 {
     delete ui;
+    qDebug()<<"AllPageDelete";
 }
 
-bool AllPageShow::load(QString pdfpath_)
+bool AllPageShow::load()
 {
     //加载pdf文件
-    Pdfpath = pdfpath_;
-    Poppler::Document* pdfdoc = Poppler::Document::load(Pdfpath);
+    pdfdoc = Poppler::Document::load(Pdfpath);
     if(pdfdoc==nullptr) return false;
     //PDf大小
     size = pdfdoc->page(0)->pageSize();
     //初始放缩
     scale = 100;
+    numpages = pdfdoc->numPages();
 
     if(pdfdoc!=nullptr){
         pdfdoc->setRenderBackend(Poppler::Document::SplashBackend);
@@ -51,7 +52,7 @@ void AllPageShow::updatePDF()
     //新方法，根据滚动滑轮位置来调整渲染的画面
     QScrollBar *bar = ui->graphicsView->verticalScrollBar();
 
-//    qDebug()<<ui->graphicsView->size()<<bar->value()<<size<<"UPDATE"<<myscene->sceneRect()<<bar->size();
+    qDebug()<<ui->graphicsView->size()<<bar->value()<<size<<"UPDATE"<<myscene->sceneRect()<<bar->size();
 
     QTransform t;
     int minindex,maxindex;
@@ -61,16 +62,16 @@ void AllPageShow::updatePDF()
 
     maxindex = minindex;
 
-    currentpage = minindex;
+    if(currentpage!=minindex) emit pagechanged(minindex);//当前页改变后，触发信号
+    else return;
 
-    qDebug()<<currentpage;
+    currentpage = minindex;
 
     int minneed = minindex-onceRender;
     if(minneed<0) minneed = 0;
     int maxneed = maxindex+onceRender;
     if(maxneed>=allpage.size()) maxneed = allpage.size()-1;
 
-    if(minneed>=minRender&&maxneed<=maxRender) return;
 
     for(int i = minneed;i<=maxneed;i++){
         QGraphicsItem *item = myscene->itemAt(0,i*size.height()*scale,t);
@@ -84,7 +85,6 @@ void AllPageShow::updatePDF()
             item->setData(Qt::UserRole+2,QVariant( scale));
         }
     }
-    minRender = minneed,maxRender = maxneed;
 }
 
 
@@ -127,7 +127,7 @@ void AllPageShow::setscale(int _scale)
     scale = _scale;
     QScrollBar *bar = ui->graphicsView->verticalScrollBar();
 
-//    qDebug()<<ui->graphicsView->size()<<bar->value()<<size<<"Scene: "<<myscene->sceneRect()<<bar->rect();
+    qDebug()<<ui->graphicsView->size()<<bar->value()<<size<<"Scene: "<<myscene->sceneRect()<<bar->rect();
 
     QTransform t;
 
@@ -148,12 +148,12 @@ void AllPageShow::setscale(int _scale)
     QGraphicsPixmapItem* newitem = myscene->addPixmap(QPixmap::fromImage(getImage(address)));
     newitem->setPos(0,size.height()*address*scaled);
     newitem->setData(Qt::UserRole,QVariant(address));
-    newitem->setData(Qt::UserRole+2,QVariant(scaled));
+    newitem->setData(Qt::UserRole+2,QVariant(scale));
 
     ui->graphicsView->centerOn(newitem);
 
     currentpage = address;
-    minRender = maxRender = address;
+
 
     connect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updatePDF);
 
@@ -165,6 +165,8 @@ void AllPageShow::located(int index)
     //定位到某一页
     float scaled = (float)scale/100;
     ui->graphicsView->centerOn(0,size.height()*index*scaled);
+    currentpage = index;
+    emit pagechanged(currentpage);//
     updatePDF();
 }
 

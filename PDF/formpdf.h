@@ -8,6 +8,7 @@
 #include<QPainter>
 #include<poppler-qt5.h>
 #include<QDebug>
+#include<QScrollBar>
 
 namespace Ui {
 class FormPdf;
@@ -40,6 +41,12 @@ public:
     void located(int num);
 
     int scaled;
+
+    int numpages;
+
+signals:
+    void pagechanged(int currentpage);
+
 private:
 
     Ui::FormPdf *ui;

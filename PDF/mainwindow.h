@@ -44,7 +44,7 @@ private:
 
     void showpdftable();
 
-    void setActionTF(bool arg);
+    void setActionTF();
 
 
 
@@ -75,6 +75,12 @@ private slots:
 
     void on_tabWidget_currentChanged(int index);
 
+    void on_tabWidget_tabCloseRequested(int index);
+
+    void setLocatedpage(int index);
+
+    void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
+
 private:
     Ui::MainWindow *ui;
 
@@ -82,10 +88,14 @@ private:
 
     QSpinBox *Locatedpage;
     QSlider *Scaling;//缩放因子
+    QLabel *pagenums;
+
 
     QString getfinaldirname(const QString &fulldirname);
     void showtable();
     void get_xml_Marks(Poppler::Document *pdfdoc);
     void read_xml(QDomNode node, QTreeWidgetItem *parent);
+
+
 };
 #endif // MAINWINDOW_H
