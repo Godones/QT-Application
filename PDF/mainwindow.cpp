@@ -522,26 +522,4 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
         lastpdf->located(index);
     }
 }
-/*
-void MainWindow::AdjustTabWidth()
-{
-    int max_tabwidget_width =  width() - 150;
-    ui->tabWidget->tabBar()->setMaximumWidth(max_tabwidget_width);
-    // get the average with of the tab
-    int average_width = ui->tabWidget->count() > (max_tabwidget_width / MaxTabWidth) ?
-                max_tabwidget_width / tabWidget->count() : MaxTabWidth;
 
-    tabWidget->setStyleSheet(QString::fromUtf8("BTabWidget::pane{"
-                                               "border:none;"
-                                               "}"
-                                               "BTabWidget::tab-bar {"
-                                               "left: 6px;"
-                                               "}"
-
-                                               "QTabBar::tab {"
-                                               "min-width:78px;"
-                                               "width:%1px;"
-                                               "}"
-                                               ).arg(average_width));
-}
-*/

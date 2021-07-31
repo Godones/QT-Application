@@ -12,9 +12,9 @@ void Mygraphics::scrollContentsBy(int dx, int dy)
 {
     //滚动条事件
     qDebug()<<dx<<" "<<dy<<"!!!!";
-    if(qAbs(dy)>=75){
-        emit updatePDF();
-    }
+
+    emit updatePDF();
+
     QGraphicsView::scrollContentsBy(dx,dy);
 }
 /*

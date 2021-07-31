@@ -127,7 +127,7 @@ void AllPageShow::setscale(int _scale)
     scale = _scale;
     QScrollBar *bar = ui->graphicsView->verticalScrollBar();
 
-    qDebug()<<ui->graphicsView->size()<<bar->value()<<size<<"Scene: "<<myscene->sceneRect()<<bar->rect();
+    qDebug()<<ui->graphicsView->size()<<bar->value()<<size<<"Scene: "<<myscene->sceneRect()<<bar->rect()<<allpage.size();
 
     QTransform t;
 
@@ -143,7 +143,12 @@ void AllPageShow::setscale(int _scale)
     //先清空场景内的内容
     myscene->clear();
     float scaled = (float)scale/100;
-    myscene->setSceneRect(0,0,size.width()*scaled,size.height()*scaled*allpage.size());
+
+    myscene->setSceneRect(0,0,(int)(size.width()*scaled),(int)(size.height()*scaled*allpage.size()));
+
+
+    qDebug()<<ui->graphicsView->size()<<bar->value()<<size*scaled<<"Scene: "<<myscene->sceneRect()<<bar->rect()<<allpage.size();
+
 
     QGraphicsPixmapItem* newitem = myscene->addPixmap(QPixmap::fromImage(getImage(address)));
     newitem->setPos(0,size.height()*address*scaled);
