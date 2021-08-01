@@ -50,17 +50,26 @@ bool AllPageShow::load()
 void AllPageShow::updatePDF()
 {
     //新方法，根据滚动滑轮位置来调整渲染的画面
+    //不适用，弃用方法
     QScrollBar *bar = ui->graphicsView->verticalScrollBar();
-
-    qDebug()<<ui->graphicsView->size()<<bar->value()<<size<<"UPDATE"<<myscene->sceneRect()<<bar->size();
-
     QTransform t;
-    int minindex,maxindex;
 
+    //     测试
+
+    updateShow();
+   QSize viewsize = ui->graphicsView->size();
+   QPointF center =  ui->graphicsView->mapToScene(viewsize.width()/2,viewsize.height()/2);
+   QGraphicsItem* centeritem =  myscene->itemAt(center,t);
+   qDebug()<<centeritem->data(Qt::UserRole).toInt()<<centeritem->data(Qt::UserRole+2).toInt()<<center<<viewsize;
+   if(centeritem!=nullptr) qDebug()<<"Test: "<<centeritem->scenePos();
+
+
+    int minindex,maxindex;
     float scaled = (float)scale/100.0;
     minindex = (bar->value()+bar->height()/2)/(size.height()*scaled);
-
     maxindex = minindex;
+
+    qDebug()<<ui->graphicsView->size()<<bar->value()<<size*scaled<<"UPDATE"<<myscene->sceneRect()<<bar->size();
 
     if(currentpage!=minindex) emit pagechanged(minindex);//当前页改变后，触发信号
     else return;
@@ -85,8 +94,40 @@ void AllPageShow::updatePDF()
             item->setData(Qt::UserRole+2,QVariant( scale));
         }
     }
+
+
 }
 
+void AllPageShow::updateShow(){
+
+    QTransform t;
+    //获取视图大小
+   QSize viewsize = ui->graphicsView->size();
+   //获取视图中央位置在场景中的位置
+   QPointF centerneed =  ui->graphicsView->mapToScene(viewsize.width()/2,viewsize.height()/2);
+
+   float scaled = (float)scale/100;
+   //对应于第y张图片
+   int y = (float)centerneed.ry()/(size.height()*scaled);
+
+   qDebug()<<y<<"~~~~~~~~~"<<centerneed.ry();
+
+
+   int hold =(float) viewsize.height()/((size.height()*scaled));
+
+   int over = (y+onceRender)>=numpages?numpages-1:y+onceRender;
+   myscene->clear();
+   for(int i= (y-onceRender)<0?0:y-onceRender ;i<= over;i++){
+       qDebug()<<i;
+       QImage image = getImage(i);
+       QGraphicsPixmapItem* item = myscene->addPixmap(QPixmap::fromImage(image));
+       item->setPos(0,size.height()*i*scaled);
+       item->setData(Qt::UserRole,QVariant(i));
+       item->setData(Qt::UserRole+2,QVariant( scale));
+   }
+
+
+}
 
 void AllPageShow::fitpageshow(){
     //适合页面
@@ -95,21 +136,27 @@ void AllPageShow::fitpageshow(){
     float scaled = (float)scale/100;
     myscene->setSceneRect(0,0,size.width()*scaled,size.height()*scaled*allpage.size());
 
+    //设置视图大小
+//    ui->graphicsView->setSceneRect(myscene->sceneRect());
+
     for(int i=0;i<allpage.size();i++){
         if(i<firtRender){
             QImage image = getImage(i);
             QGraphicsPixmapItem* item = myscene->addPixmap(QPixmap::fromImage(image));
-            item->setPos(0,size.height()*i);
+            item->setPos(0,size.height()*i*scaled);
             item->setData(Qt::UserRole,QVariant(i));
-            item->setData(Qt::UserRole+2,QVariant(scale));
+            item->setData(Qt::UserRole+2,QVariant(scale));            
             if(i==0) need = item;
+            //更新isRendered
         }
     }
-    minRender = 0,maxRender = firtRender-1;
     currentpage = 0;
     ui->graphicsView->setScene(myscene);
     ui->graphicsView->centerOn(need);
-    connect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updatePDF);
+
+//    connect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updatePDF);
+    connect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updateShow);
+
 }
 
 
@@ -123,45 +170,39 @@ QImage AllPageShow::getImage(int index)
 
 void AllPageShow::setscale(int _scale)
 {
-    //重新绘制画面，将之前渲染的全部删除，渲染滚动条对应位置的即可
+    //重新绘制画面，将之前渲染的全部删除
     scale = _scale;
-    QScrollBar *bar = ui->graphicsView->verticalScrollBar();
+    float scaled = (float)scale/100;
+    QSize viewsize = ui->graphicsView->size();
+    //获取视图中央位置在场景中的位置
+    QPointF centerneed =  ui->graphicsView->mapToScene(viewsize.width()/2,viewsize.height()/2);
 
-    qDebug()<<ui->graphicsView->size()<<bar->value()<<size<<"Scene: "<<myscene->sceneRect()<<bar->rect()<<allpage.size();
+    //对应于第y张图片
+    int y = (float)centerneed.ry()/(size.height()*scaled);
 
     QTransform t;
 
-    int barheight = bar->size().height()/2;
-    QGraphicsItem *item =  myscene->itemAt(0,bar->value()+barheight,t);//获取滚轮位置的图片
-    int address = item->data(Qt::UserRole).toInt();
-
-//    qDebug()<<"FLAG"<<address;
-
     //断开更新操作信号连接
-    disconnect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updatePDF);
+//    disconnect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updatePDF);
+    disconnect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updateShow);
+
     //调整场景大小
     //先清空场景内的内容
     myscene->clear();
-    float scaled = (float)scale/100;
-
     myscene->setSceneRect(0,0,(int)(size.width()*scaled),(int)(size.height()*scaled*allpage.size()));
+    qDebug()<<ui->graphicsView->size()<<size*scaled<<"Scene: "<<myscene->sceneRect()<<allpage.size();
 
-
-    qDebug()<<ui->graphicsView->size()<<bar->value()<<size*scaled<<"Scene: "<<myscene->sceneRect()<<bar->rect()<<allpage.size();
-
-
-    QGraphicsPixmapItem* newitem = myscene->addPixmap(QPixmap::fromImage(getImage(address)));
-    newitem->setPos(0,size.height()*address*scaled);
-    newitem->setData(Qt::UserRole,QVariant(address));
+    QGraphicsPixmapItem* newitem = myscene->addPixmap(QPixmap::fromImage(getImage(y)));
+    newitem->setPos(0,size.height()*y*scaled);
+    newitem->setData(Qt::UserRole,QVariant(y));
     newitem->setData(Qt::UserRole+2,QVariant(scale));
 
     ui->graphicsView->centerOn(newitem);
 
-    currentpage = address;
+    currentpage = y;
 
-
-    connect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updatePDF);
-
+//    connect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updatePDF);
+    connect(ui->graphicsView,&Mygraphics::updatePDF,this,&AllPageShow::updateShow);
 
 }
 
@@ -169,10 +210,12 @@ void AllPageShow::located(int index)
 {
     //定位到某一页
     float scaled = (float)scale/100;
-    ui->graphicsView->centerOn(0,size.height()*index*scaled);
+    ui->graphicsView->centerOn(0,size.height()*(float)(index+0.5)*scaled);
     currentpage = index;
     emit pagechanged(currentpage);//
-    updatePDF();
+//    updatePDF();
+    updateShow();
+
 }
 
 

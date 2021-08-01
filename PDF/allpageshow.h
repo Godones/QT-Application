@@ -61,11 +61,8 @@ private:
     Ui::AllPageShow *ui;
     QVector<Poppler::Page *> allpage;//存储所有页面
 
-
     QSize size;
 
-
-    int minRender,maxRender;
 
     QGraphicsScene *myscene;
 
@@ -73,9 +70,9 @@ private:
 
     const int firtRender = 3;
 
-
     void Silderchange();
 
+    void updateShow();
 };
 
 #endif // ALLPAGESHOW_H
