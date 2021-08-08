@@ -40,6 +40,7 @@ bool AllPageShow::load()
         pdfdoc->setRenderHint(Poppler::Document::ThinLineShape);
         for(int i=0;i<pdfdoc->numPages();i++){
             Poppler::Page *page = pdfdoc->page(i);//获得所有页面
+            qDebug()<<page->pageSize();
             allpage.push_back(page);
         }
         fitpageshow();
@@ -110,7 +111,7 @@ void AllPageShow::updateShow(){
    //对应于第y张图片
    int y = (float)centerneed.ry()/(size.height()*scaled);
 
-   qDebug()<<y<<"~~~~~~~~~"<<centerneed.ry();
+   qDebug()<<y<<"~~~~~~~~~"<<centerneed;
 
 
    int hold =(float) viewsize.height()/((size.height()*scaled));

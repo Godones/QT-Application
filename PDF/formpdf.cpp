@@ -42,20 +42,20 @@ void FormPdf::fitwindowshow()
     //PDF以适合窗口显示
     //PDF的宽度是窗口的宽度，高度按宽度的比例缩放
     QSize size = ui->scrollArea->size();
-    QSize pagesize = pdfdoc->page(currentpage)->pageSize();
+    QSizeF pagesize = pdfdoc->page(currentpage)->pageSizeF();
     float scale =(float) size.width()/ pagesize.width();
     scaled = scale*100;
 
-    currentshow = pdfdoc->page(currentpage)->renderToImage(72*scale,72*scale,0,currentpage,pagesize.width()*scale,pagesize.height()*scale);
+    currentshow = pdfdoc->page(currentpage)->renderToImage(72*scale,72*scale,0,0,pagesize.width()*scale,pagesize.height()*scale);
     ui->label->setPixmap(QPixmap::fromImage(currentshow));
 }
 
 void FormPdf::fitpageshow()
 {
     //PDF以适合页面显示
-    QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
+    QSizeF size = pdfdoc->page(currentpage)->pageSizeF();//页面大小
     scaled = 100;
-    currentshow = pdfdoc->page(currentpage)->renderToImage(72,72,0,currentpage,size.width(),size.height());
+    currentshow = pdfdoc->page(currentpage)->renderToImage(72,72,0,0,size.width(),size.height());
     ui->label->setPixmap(QPixmap::fromImage(currentshow));//显示
 
 }
@@ -64,8 +64,8 @@ void FormPdf::scale(int factor)
 {
     float factor_ = (float)factor/100;
     scaled = factor;
-    QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
-    currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
+    QSizeF size = pdfdoc->page(currentpage)->pageSizeF();//页面大小
+    currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,0,size.width()*factor_,factor_*size.height());
     ui->label->setPixmap(QPixmap::fromImage(currentshow));//显示
 
 
@@ -78,8 +78,8 @@ void FormPdf::nextview()
 
         float factor_ = (float)scaled/100;
         currentpage +=1;
-        QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
-        currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
+        QSizeF size = pdfdoc->page(currentpage)->pageSizeF();//页面大小
+        currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,0,size.width()*factor_,factor_*size.height());
         ui->label->setPixmap(QPixmap::fromImage(currentshow));
 
         ui->scrollArea->verticalScrollBar()->setValue(0);
@@ -96,8 +96,8 @@ void FormPdf::preview()
     if(currentpage>0) {
         float factor_ = (float)scaled/100;
         currentpage -=1;
-        QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
-        currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
+        QSizeF size = pdfdoc->page(currentpage)->pageSizeF();//页面大小
+        currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,0,size.width()*factor_,factor_*size.height());
         ui->label->setPixmap(QPixmap::fromImage(currentshow));
         ui->scrollArea->verticalScrollBar()->setValue(0);
 
@@ -112,8 +112,8 @@ void FormPdf::located(int num)
     if(num>=0&&num<pdfdoc->numPages()){
         float factor_ = (float)scaled/100;
         currentpage = num;
-        QSize size = pdfdoc->page(currentpage)->pageSize();//页面大小
-        currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,currentpage,size.width()*factor_,factor_*size.height());
+        QSizeF size = pdfdoc->page(currentpage)->pageSizeF();//页面大小
+        currentshow = pdfdoc->page(currentpage)->renderToImage(72*factor_,72*factor_,0,0,size.width()*factor_,factor_*size.height());
         ui->label->setPixmap(QPixmap::fromImage(currentshow));
 
         emit pagechanged(currentpage);//
