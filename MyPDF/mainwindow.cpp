@@ -7,44 +7,29 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui->setupUi(this);
     setCentralWidget(ui->tabWidget);
-
     //设置应用标题
     setWindowTitle("GodPDF");
     Locatedpage = new QSpinBox(this);
 
     Locatedpage->setMinimum(0);
-    ui->toolBar->addSeparator();
 
-    connect(Locatedpage, SIGNAL(valueChanged(int)), this,
-        SLOT(Locatedpage_valchanged(int)));
-
-    Scaling = new QSlider(Qt::Horizontal);
-    //设置滑动条控件的最小值
-    Scaling->setMinimum(20);
-    //设置滑动条控件的最大值
-    Scaling->setMaximum(300);
-    //设置滑动条控件的值
-    Scaling->setValue(100);
-    Scaling->setMaximumWidth(100);
-    Scaling->setTickPosition(QSlider::TicksBelow);
-    Scaling->setTickInterval(25);
-    Scaling->setSingleStep(25);
-
-    //信号和槽 当滑动条的值发生改变时，即产生一个valueChanged(int)信号
-    //设置QLineEdit控件的显示文本
-    connect(Scaling, SIGNAL(valueChanged(int)), this, SLOT(resetScale(int)));
+    connect(Locatedpage, SIGNAL(valueChanged(int)), this, SLOT(Locatedpage_valchanged(int)));
 
     ui->toolBar->addWidget(Locatedpage);
 
-    pagenums = new QLabel();
-    ui->toolBar->addSeparator();
-    ui->toolBar->addWidget(pagenums);
+    zoomshow = new QLabel("zoom"); //显示缩放系数
+
+    ui->toolBar->addAction(ui->bigaction);
+
+    ui->toolBar->addWidget(zoomshow);
+
+    ui->toolBar->addAction(ui->smalleraction);
 
     ui->toolBar->addSeparator();
-    ui->toolBar->addWidget(Scaling);
 
     // Page有关闭按钮，可被关闭
     ui->tabWidget->clear();
+
     ui->tabWidget->setTabsClosable(true);
 
     //一开始将打开文件按钮设置不可使用
@@ -70,9 +55,9 @@ void MainWindow::setActionTF()
     ui->fitwindowsaction->setEnabled(false);
     ui->allpageaction->setEnabled(false);
     Locatedpage->setEnabled(false);
-    Scaling->setEnabled(false);
+    ui->bigaction->setEnabled(false);
+    ui->smalleraction->setEnabled(false);
     Locatedpage->setEnabled(false);
-    pagenums->setEnabled(false);
 
     ui->dockWidget_2->setVisible(false); //初始界面dock栏不可见
 }
@@ -93,8 +78,9 @@ void MainWindow::openpdf(QString filepath)
     pdf->PdfPath = filepath;
 
     if (pdf->loadpdf()) {
+
         ui->treeWidget->clear(); //清空标签
-        get_xml_Marks(Poppler::Document::load(filepath));
+        get_xml_Marks(filepath);
         ui->treeWidget->expandAll();
 
         ui->dockWidget_2->setVisible(true);
@@ -103,7 +89,7 @@ void MainWindow::openpdf(QString filepath)
 
         ui->tabWidget->setCurrentWidget(pdf);
 
-        pagenums->setText(QString("%1").arg(pdf->numpages));
+        Locatedpage->setSuffix("/" + (QString("%1").arg(pdf->numpages)));
 
         Locatedpage->setMaximum(pdf->numpages - 1);
 
@@ -256,7 +242,7 @@ void MainWindow::on_nextpageaction_triggered()
     QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
     FormPdf* temp = (FormPdf*)subwindow;
     if (temp->property("type") == "page")
-        temp->nextview();
+        temp->nextpage();
 }
 
 void MainWindow::on_prepageaction_triggered()
@@ -265,14 +251,12 @@ void MainWindow::on_prepageaction_triggered()
     QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
     FormPdf* temp = (FormPdf*)subwindow;
     if (temp->property("type") == "page")
-        temp->preview();
+        temp->prepage();
 }
 
 void MainWindow::Locatedpage_valchanged(int num)
 {
     //定位到某一页
-    qDebug() << "LOin";
-
     QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
     if (subwindow == nullptr)
         return;
@@ -280,20 +264,32 @@ void MainWindow::Locatedpage_valchanged(int num)
     QString type = subwindow->property("type").toString();
     if (type == "page") {
         FormPdf* temp = (FormPdf*)subwindow;
-        temp->located(num);
+        temp->locatepage(num);
     }
 }
-
-void MainWindow::resetScale(int scale)
+void MainWindow::on_bigaction_triggered()
 {
-    // QSlider滑动缩放
+    QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
+    if (subwindow == nullptr)
+        return;
+    FormPdf* temp = (FormPdf*)subwindow;
+    if (temp->property("type") == "page")
+        temp->zoomIn();
+}
+
+void MainWindow::on_smalleraction_triggered()
+{
     QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
     if (subwindow == nullptr)
         return;
 
     FormPdf* temp = (FormPdf*)subwindow;
     if (temp->property("type") == "page")
-        temp->scale(scale);
+        temp->zoomOut();
+}
+void MainWindow::resetScale(int scale)
+{
+    // QSlider滑动缩放
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -320,13 +316,11 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         ui->allpageaction->setEnabled(true);
 
         Locatedpage->setEnabled(true);
-        Scaling->setEnabled(true);
-        pagenums->setEnabled(true);
+
         Locatedpage->setMaximum(lastpdf->numpages - 1);
-        pagenums->setText(QString("%1").arg(lastpdf->numpages));
 
         ui->treeWidget->clear();
-        get_xml_Marks(lastpdf->pdfdoc);
+        get_xml_Marks(lastpdf->PdfPath);
         ui->dockWidget_2->setVisible(true);
         ui->treeWidget->expandAll();
 
@@ -337,9 +331,9 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         ui->fitaction->setEnabled(false);
         ui->fitwindowsaction->setEnabled(false);
         Locatedpage->setEnabled(false);
-        Scaling->setEnabled(false);
+
         Locatedpage->setEnabled(false);
-        pagenums->setEnabled(false);
+
         ui->dockWidget_2->setVisible(false);
     }
 }
@@ -391,8 +385,9 @@ void MainWindow::on_allpageaction_triggered()
 
 }
 */
-void MainWindow::get_xml_Marks(Poppler::Document* pdfdoc)
+void MainWindow::get_xml_Marks(QString PdfPath)
 {
+    Poppler::Document* pdfdoc = Poppler::Document::load(PdfPath);
     QDomDocument* doc = pdfdoc->toc();
     if (doc == nullptr)
         return;
@@ -470,7 +465,7 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem* item, int column)
     QWidget* subwindow = ui->tabWidget->currentWidget();
     if (subwindow->property("type") == "page") {
         FormPdf* lastpdf = static_cast<FormPdf*>(subwindow);
-        lastpdf->located(index);
+        lastpdf->locatepage(index);
     }
 }
 
@@ -485,13 +480,10 @@ void MainWindow::on_actionTest_triggered()
         //        PDFform->setWindowFlag(Qt::Widget, true);
         //        PDFform->show();
         ui->treeWidget->clear(); //清空标签
-        get_xml_Marks(Poppler::Document::load(filepath));
+        get_xml_Marks(filepath);
         ui->treeWidget->expandAll();
-
         ui->dockWidget_2->setVisible(true);
-
         ui->tabWidget->addTab(PDFform, getfinaldirname(filepath));
-
         ui->tabWidget->setCurrentWidget(PDFform);
     }
 }

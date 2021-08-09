@@ -1,11 +1,11 @@
 #include "mainwindow.h"
-#include <QTextCodec>
 #include <QApplication>
+#include <QTextCodec>
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 
-    QTextCodec *code = QTextCodec::codecForName("UTF-8");
+    QTextCodec* code = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForLocale(code);
     QApplication a(argc, argv);
     MainWindow w;

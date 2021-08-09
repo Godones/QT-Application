@@ -33,7 +33,7 @@ bool MulPage::setDocument(const QString& filePath)
     m_document->setRenderHint(Poppler::Document::Antialiasing);
     m_document->setRenderHint(Poppler::Document::TextAntialiasing);
     m_document->setRenderHint(Poppler::Document::ThinLineShape);
-
+    numpages = m_document->numPages();
     m_PageRender->setDocument(m_document); //注入线程信息
     m_totalPages = m_document->numPages(); //获取页面数量
     for (int i = 0; i < m_totalPages; i++) {
@@ -137,6 +137,7 @@ void MulPage::invalidate()
     setMinimumSize(m_totalSize); //设置窗口最小大小
     qDebug() << "pagesize: " << m_totalSize << " " << m_totalPages;
     m_pageCache.clear();
+    m_cachedPagesLRU.clear();
     update(); //更新窗口
 }
 
@@ -181,9 +182,8 @@ void MulPage::paintEvent(QPaintEvent* event)
 
             painter.setRenderHint(QPainter::Antialiasing, true); //抗锯齿
             painter.drawPixmap((width() - timage.width()) / 2, y, QPixmap::fromImage(timage));
-
             getPage(t_vtop, t_vbottom);
-            emit updateinfo(page, m_totalPages, m_zoom); //更新内容
+            emit updateinfo(page, m_totalPages, m_zoom, numpages); //更新内容
 
         } else {
             //缓存中不存在

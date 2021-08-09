@@ -17,14 +17,27 @@ MulPDFForm::MulPDFForm(QWidget* parent)
     vlayout = new QVBoxLayout;
 
     vlayout->addWidget(area);
+    vlayout->setSpacing(0);
+    vlayout->setContentsMargins(0, 0, 0, 0);
 
     this->setAttribute(Qt::WA_DeleteOnClose);
     this->setLayout(vlayout);
+
+    connect(PDF, &MulPage::updateinfo, this, &MulPDFForm::updateinfo);
 }
 
 MulPDFForm::~MulPDFForm()
 {
     delete ui;
+}
+
+void MulPDFForm::updateinfo(int current, int totalpages, qreal _zoom, int _numpages)
+{
+    Q_UNUSED(totalpages);
+    zoom = _zoom;
+    currentpage = current;
+    numpages = _numpages;
+    emit pagechanged(current); //显示当前页面的信号
 }
 
 void MulPDFForm::nextpage()
@@ -59,6 +72,8 @@ void MulPDFForm::locatepage(int index)
 
 void MulPDFForm::openPDF(QString& PDFpath)
 {
+    PdfPath = PDFpath;
+
     PDF->setDocument(PDFpath);
 }
 

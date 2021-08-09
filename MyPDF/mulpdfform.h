@@ -20,12 +20,22 @@ public:
     explicit MulPDFForm(QWidget* parent = nullptr);
     ~MulPDFForm();
 
+    void openPDF(QString& PDFpath);
+
+    int currentpage;
+    qreal zoom;
+    int numpages;
+    QString PdfPath; //三个需要交互的变量
+
+signals:
+    void pagechanged(int currentpage);
+
+public slots:
     void nextpage();
     void prepage();
     void zoomIn(); //放大
     void zoomOut(); //缩小
     void locatepage(int); //跳转
-    void openPDF(QString& PDFpath);
 
 protected:
     void mouseMoveEvent(QMouseEvent* event);
@@ -40,6 +50,8 @@ private:
     MulPage* PDF;
     QScrollArea* area;
     QVBoxLayout* vlayout;
+
+    void updateinfo(int current, int totalpages, qreal zoom, int numpages);
 };
 
 #endif // MULPDFFORM_H

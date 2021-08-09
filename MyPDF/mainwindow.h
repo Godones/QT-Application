@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <pdftable.h>
-#include <poppler-qt5.h>
+#include "formpdf.h"
+#include "mulpdfform.h"
 #include <QDialog>
 #include <QFile>
 #include <QFileDialog>
@@ -13,9 +13,8 @@
 #include <QSpinBox>
 #include <QTabWidget>
 #include <QTreeWidgetItem>
-#include "formpdf.h"
-#include "mulpdfform.h"
-
+#include <pdftable.h>
+#include <poppler-qt5.h>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -23,76 +22,78 @@ class MainWindow;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
-  Q_OBJECT
+    Q_OBJECT
 
- public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
+public:
+    MainWindow(QWidget* parent = nullptr);
+    ~MainWindow();
 
- signals:
-  void sentinformation_addfile(
-      QStringList newnames);  //增加文件时向showpdfform发射
+signals:
+    void sentinformation_addfile(
+        QStringList newnames); //增加文件时向showpdfform发射
 
- private:
-  void openpdf(QString filepath);
+private:
+    void openpdf(QString filepath);
 
-  void showpdfslot(QString filepath);
+    void showpdfslot(QString filepath);
 
-  void isbelongQt(QString& dir);
+    void isbelongQt(QString& dir);
 
-  void inputresposityname(QString& resposity);
+    void inputresposityname(QString& resposity);
 
-  void showpdftable();
+    void showpdftable();
 
-  void setActionTF();
+    void setActionTF();
 
- private slots:
-  void on_openfileaction_triggered();
+private slots:
+    void on_openfileaction_triggered();
 
-  void on_createlibaction_triggered();
+    void on_createlibaction_triggered();
 
-  void on_openoneaction_triggered();
+    void on_openoneaction_triggered();
 
-  void on_addfileaction_triggered();
+    void on_addfileaction_triggered();
 
-  void on_fitaction_triggered();
+    void on_fitaction_triggered();
 
-  void on_nextpageaction_triggered();
+    void on_nextpageaction_triggered();
 
-  void on_prepageaction_triggered();
+    void on_prepageaction_triggered();
 
-  void Locatedpage_valchanged(int num);
+    void Locatedpage_valchanged(int num);
 
-  void resetScale(int);
+    void resetScale(int);
 
-  void on_fitwindowsaction_triggered();
+    void on_fitwindowsaction_triggered();
 
-  //    void on_allpageaction_triggered();
+    //    void on_allpageaction_triggered();
 
-  void on_tabWidget_currentChanged(int index);
+    void on_tabWidget_currentChanged(int index);
 
-  void on_tabWidget_tabCloseRequested(int index);
+    void on_tabWidget_tabCloseRequested(int index);
 
-  void setLocatedpage(int index);
+    void setLocatedpage(int index);
 
-  void on_treeWidget_itemClicked(QTreeWidgetItem* item, int column);
+    void on_treeWidget_itemClicked(QTreeWidgetItem* item, int column);
 
-  void on_actionTest_triggered();
+    void on_actionTest_triggered();
 
- private:
-  Ui::MainWindow* ui;
+    void on_bigaction_triggered();
 
-  QString Rootpath;  //保存仓库的路径
+    void on_smalleraction_triggered();
 
-  QSpinBox* Locatedpage;
-  QSlider* Scaling;  //缩放因子
-  QLabel* pagenums;
+private:
+    Ui::MainWindow* ui;
 
-  QString getfinaldirname(const QString& fulldirname);
-  void showtable();
-  void get_xml_Marks(Poppler::Document* pdfdoc);
-  void read_xml(QDomNode node, QTreeWidgetItem* parent);
+    QString Rootpath; //保存仓库的路径
 
-  void AdjustTabWidth();
+    QSpinBox* Locatedpage;
+
+    QLabel* zoomshow;
+
+    QString getfinaldirname(const QString& fulldirname);
+    void showtable();
+    void get_xml_Marks(QString);
+    void read_xml(QDomNode node, QTreeWidgetItem* parent);
 };
-#endif  // MAINWINDOW_H
+#endif // MAINWINDOW_H

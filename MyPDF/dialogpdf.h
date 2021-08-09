@@ -7,16 +7,16 @@ namespace Ui {
 class DialogPDF;
 }
 
-class DialogPDF : public QDialog
-{
+class DialogPDF : public QDialog {
     Q_OBJECT
 
 public:
-    explicit DialogPDF(QWidget *parent = nullptr);
+    explicit DialogPDF(QWidget* parent = nullptr);
     ~DialogPDF();
     void load(QPixmap pix);
+
 private:
-    Ui::DialogPDF *ui;
+    Ui::DialogPDF* ui;
 };
 
 #endif // DIALOGPDF_H
