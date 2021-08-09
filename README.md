@@ -10,4 +10,4 @@ PDF管理器功能较为完善，但仍存在bug仍在修复。
 
 运行截图:
 
-![img](D:\study\Application\298WY7U4KAMHV$@$SE4MBQF.png)
+![img](D:\study\Application\运行截图.png)
