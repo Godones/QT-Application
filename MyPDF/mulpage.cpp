@@ -24,7 +24,7 @@ MulPage::~MulPage() { delete m_PageRender; }
 
 bool MulPage::setDocument(const QString& filePath)
 {
-    qDebug() << "INN";
+
     m_document = Poppler::Document::load(filePath);
     if (m_document == nullptr)
         return false;
@@ -33,7 +33,7 @@ bool MulPage::setDocument(const QString& filePath)
     m_document->setRenderHint(Poppler::Document::Antialiasing);
     m_document->setRenderHint(Poppler::Document::TextAntialiasing);
     m_document->setRenderHint(Poppler::Document::ThinLineShape);
-    numpages = m_document->numPages();
+
     m_PageRender->setDocument(m_document); //注入线程信息
     m_totalPages = m_document->numPages(); //获取页面数量
     for (int i = 0; i < m_totalPages; i++) {
@@ -99,6 +99,21 @@ void MulPage::locatepage(int page)
     //跳转到某一页
     if (page > 0 && page < m_totalPages) {
         m_pageIndex = page;
+    }
+}
+
+void MulPage::fitwindowsshow()
+{
+    qreal pagewidth = m_pageSizes[0].width();
+    m_zoom = size().width() / pagewidth;
+    invalidate();
+}
+
+void MulPage::fitpageshow()
+{
+    if (m_zoom != 1.0f) {
+        m_zoom = 1.0;
+        invalidate();
     }
 }
 
@@ -178,12 +193,12 @@ void MulPage::paintEvent(QPaintEvent* event)
 
             //            qDebug()<<"tsize与timage应该一样大小"<<tsize<<timage.size();
 
-            qDebug() << "有" << QRect((width() - timage.width()) / 2, y, tsize.width(), tsize.height());
+            //            qDebug() << "有" << QRect((width() - timage.width()) / 2, y, tsize.width(), tsize.height());
 
             painter.setRenderHint(QPainter::Antialiasing, true); //抗锯齿
             painter.drawPixmap((width() - timage.width()) / 2, y, QPixmap::fromImage(timage));
             getPage(t_vtop, t_vbottom);
-            emit updateinfo(page, m_totalPages, m_zoom, numpages); //更新内容
+            emit updateinfo(page, m_totalPages, m_zoom); //更新内容
 
         } else {
             //缓存中不存在

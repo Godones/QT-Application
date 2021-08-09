@@ -32,12 +32,14 @@ public:
     ~PdfTable();
 
     //读取文件
-    void init_read(QString& path);
+    void init_read(QString path);
     //初始设置
     void init_set();
     QImage getImage(QString& filepath);
     void createtable();
     void receive_information_addfile(QStringList pdffiles);
+
+    QString respdir;
 
 signals:
     void sentfilepath(QString pdfpath);

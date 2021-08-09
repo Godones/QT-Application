@@ -22,7 +22,7 @@ public:
     QImage getPDFImage(int index); //获取图片
 
 signals:
-    void updateinfo(int pageindex, int totalpage, qreal zoom, int numpages); //更新信息
+    void updateinfo(int pageindex, int totalpage, qreal zoom); //更新信息
 
 public slots:
     void nextpage();
@@ -30,6 +30,8 @@ public slots:
     void zoomIn(); //放大
     void zoomOut(); //缩小
     void locatepage(int); //跳转
+    void fitpageshow(); //适合页面
+    void fitwindowsshow();
 
 private slots:
     void pageLoaded(int page, qreal zoom, QImage image);
@@ -54,8 +56,6 @@ private:
     QSize m_totalSize; //总大小
 
     qreal m_zoom; //缩放大小
-
-    int numpages;
 
     Poppler::Document* m_document;
 

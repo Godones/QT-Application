@@ -23,6 +23,9 @@ MulPDFForm::MulPDFForm(QWidget* parent)
     this->setAttribute(Qt::WA_DeleteOnClose);
     this->setLayout(vlayout);
 
+    zoom = 1.0;
+    currentpage = 0;
+    numpages = 0;
     connect(PDF, &MulPage::updateinfo, this, &MulPDFForm::updateinfo);
 }
 
@@ -31,24 +34,24 @@ MulPDFForm::~MulPDFForm()
     delete ui;
 }
 
-void MulPDFForm::updateinfo(int current, int totalpages, qreal _zoom, int _numpages)
+void MulPDFForm::updateinfo(int current, int totalpages, qreal _zoom)
 {
     Q_UNUSED(totalpages);
     zoom = _zoom;
     currentpage = current;
-    numpages = _numpages;
-    emit pagechanged(current); //显示当前页面的信号
+    numpages = totalpages;
+    emit pagechanged(current, totalpages, zoom); //显示当前页面的信号
 }
 
 void MulPDFForm::nextpage()
 {
-    PDF->prepage();
+    PDF->nextpage();
     area->verticalScrollBar()->setValue(PDF->yForPage());
 }
 
 void MulPDFForm::prepage()
 {
-    PDF->nextpage();
+    PDF->prepage();
     area->verticalScrollBar()->setValue(PDF->yForPage());
 }
 
@@ -64,16 +67,28 @@ void MulPDFForm::zoomOut()
     area->verticalScrollBar()->setValue(PDF->yForPage());
 }
 
+void MulPDFForm::fitpageshow()
+{
+    //适合页面显示
+    PDF->fitpageshow();
+    area->verticalScrollBar()->setValue(PDF->yForPage());
+}
+
+void MulPDFForm::fitwindowshow()
+{
+    PDF->fitwindowsshow();
+    area->verticalScrollBar()->setValue(PDF->yForPage());
+}
+
 void MulPDFForm::locatepage(int index)
 {
     PDF->locatepage(index);
     area->verticalScrollBar()->setValue(PDF->yForPage());
 }
 
-void MulPDFForm::openPDF(QString& PDFpath)
+void MulPDFForm::openPDF(QString PDFpath)
 {
     PdfPath = PDFpath;
-
     PDF->setDocument(PDFpath);
 }
 

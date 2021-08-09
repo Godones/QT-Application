@@ -28,12 +28,16 @@ public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void updateinfo(int index, int totalpages, qreal zoom);
+
 signals:
-    void sentinformation_addfile(
-        QStringList newnames); //增加文件时向showpdfform发射
+    void sentinformation_addfile(QStringList newnames); //增加文件时向showpdfform发射
 
 private:
     void openpdf(QString filepath);
+
+    void openpdfMul(QString filepath);
 
     void showpdfslot(QString filepath);
 
@@ -60,19 +64,15 @@ private slots:
 
     void on_prepageaction_triggered();
 
-    void Locatedpage_valchanged(int num);
-
-    void resetScale(int);
+    void Locatedpage_valchanged();
 
     void on_fitwindowsaction_triggered();
 
-    //    void on_allpageaction_triggered();
+    void on_allpageaction_triggered();
 
     void on_tabWidget_currentChanged(int index);
 
     void on_tabWidget_tabCloseRequested(int index);
-
-    void setLocatedpage(int index);
 
     void on_treeWidget_itemClicked(QTreeWidgetItem* item, int column);
 
@@ -87,12 +87,15 @@ private:
 
     QString Rootpath; //保存仓库的路径
 
-    QSpinBox* Locatedpage;
+    //    QSpinBox* Locatedpage;
 
     QLabel* zoomshow;
 
+    QLabel* allpages;
+    QLineEdit* inputpage;
+
     QString getfinaldirname(const QString& fulldirname);
-    void showtable();
+    void showtable(QString);
     void get_xml_Marks(QString);
     void read_xml(QDomNode node, QTreeWidgetItem* parent);
 };

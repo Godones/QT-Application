@@ -64,9 +64,11 @@ QImage PdfTable::getImage(QString& filepath)
             return image;
     }
 }
-void PdfTable::init_read(QString& path)
+void PdfTable::init_read(QString path)
 {
     //显示path文件夹下的所有pdf文件
+    respdir = path;
+
     QDir dir(path);
     QString filtername = "*.pdf";
     QStringList filterlist;

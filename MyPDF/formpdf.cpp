@@ -65,7 +65,7 @@ void FormPdf::show()
         ui->label->clear();
         ui->label->setPixmap(QPixmap::fromImage(m_pageCache[currentpage]));
         ui->scrollArea->verticalScrollBar()->setValue(0); //回到页面起始位置
-        emit pagechanged(currentpage);
+        emit pagechanged(currentpage, numpages, m_zoom);
     } else {
         //缓存中不存在则需要先在子进程中加载
         m_PageRender->requestPage(currentpage, m_zoom);

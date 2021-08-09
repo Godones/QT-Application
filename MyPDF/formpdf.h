@@ -32,7 +32,7 @@ public:
     bool loadpdf();
 
 signals:
-    void pagechanged(int currentpage);
+    void pagechanged(int currentpage, int totalpages, qreal zoom);
 
 public slots:
 
