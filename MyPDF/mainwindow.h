@@ -1,100 +1,98 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <pdftable.h>
 #include <poppler-qt5.h>
-#include<QFile>
-#include<QDialog>
-#include<QFileDialog>
-#include "formpdf.h"
-#include "showpdfform.h"
-#include<QInputDialog>
+#include <QDialog>
+#include <QFile>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMainWindow>
+#include <QMdiSubWindow>
+#include <QSlider>
 #include <QSpinBox>
-#include<QMdiSubWindow>
-#include<QSlider>
-#include<pdftable.h>
-#include<QTabWidget>
-#include<QTreeWidgetItem>
+#include <QTabWidget>
+#include <QTreeWidgetItem>
+#include "formpdf.h"
+#include "mulpdfform.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow {
+  Q_OBJECT
 
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+ public:
+  MainWindow(QWidget* parent = nullptr);
+  ~MainWindow();
 
-signals:
-    void sentinformation_addfile(QStringList newnames);//增加文件时向showpdfform发射
+ signals:
+  void sentinformation_addfile(
+      QStringList newnames);  //增加文件时向showpdfform发射
 
-private:
-    void openpdf(QString filepath);
+ private:
+  void openpdf(QString filepath);
 
-    void showpdfslot(QString filepath);
+  void showpdfslot(QString filepath);
 
-    void isbelongQt(QString &dir);
+  void isbelongQt(QString& dir);
 
-    void inputresposityname(QString &resposity);
+  void inputresposityname(QString& resposity);
 
-    void showpdftable();
+  void showpdftable();
 
-    void setActionTF();
+  void setActionTF();
 
+ private slots:
+  void on_openfileaction_triggered();
 
+  void on_createlibaction_triggered();
 
-private slots:
-    void on_openfileaction_triggered();
+  void on_openoneaction_triggered();
 
-    void on_createlibaction_triggered();
+  void on_addfileaction_triggered();
 
+  void on_fitaction_triggered();
 
-    void on_openoneaction_triggered();
+  void on_nextpageaction_triggered();
 
-    void on_addfileaction_triggered();
+  void on_prepageaction_triggered();
 
-    void on_fitaction_triggered();
+  void Locatedpage_valchanged(int num);
 
-    void on_nextpageaction_triggered();
+  void resetScale(int);
 
-    void on_prepageaction_triggered();
+  void on_fitwindowsaction_triggered();
 
-    void Locatedpage_valchanged(int num);
+  //    void on_allpageaction_triggered();
 
-    void resetScale(int);
+  void on_tabWidget_currentChanged(int index);
 
-    void on_fitwindowsaction_triggered();
+  void on_tabWidget_tabCloseRequested(int index);
 
+  void setLocatedpage(int index);
 
-//    void on_allpageaction_triggered();
+  void on_treeWidget_itemClicked(QTreeWidgetItem* item, int column);
 
-    void on_tabWidget_currentChanged(int index);
+  void on_actionTest_triggered();
 
-    void on_tabWidget_tabCloseRequested(int index);
+ private:
+  Ui::MainWindow* ui;
 
-    void setLocatedpage(int index);
+  QString Rootpath;  //保存仓库的路径
 
-    void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
+  QSpinBox* Locatedpage;
+  QSlider* Scaling;  //缩放因子
+  QLabel* pagenums;
 
-private:
-    Ui::MainWindow *ui;
+  QString getfinaldirname(const QString& fulldirname);
+  void showtable();
+  void get_xml_Marks(Poppler::Document* pdfdoc);
+  void read_xml(QDomNode node, QTreeWidgetItem* parent);
 
-    QString Rootpath;//保存仓库的路径
-
-    QSpinBox *Locatedpage;
-    QSlider *Scaling;//缩放因子
-    QLabel *pagenums;
-
-
-    QString getfinaldirname(const QString &fulldirname);
-    void showtable();
-    void get_xml_Marks(Poppler::Document *pdfdoc);
-    void read_xml(QDomNode node, QTreeWidgetItem *parent);
-
-
-    void AdjustTabWidth();
+  void AdjustTabWidth();
 };
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H

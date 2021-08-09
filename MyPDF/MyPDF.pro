@@ -11,23 +11,29 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    dialogpdf.cpp \
     formpdf.cpp \
     main.cpp \
     mainwindow.cpp \
     mulpage.cpp \
+    mulpdfform.cpp \
     pagerender.cpp \
     pdftable.cpp
 
 HEADERS += \
+    dialogpdf.h \
     formpdf.h \
     mainwindow.h \
     mulpage.h \
+    mulpdfform.h \
     pagerender.h \
     pdftable.h
 
 FORMS += \
+    dialogpdf.ui \
     formpdf.ui \
     mainwindow.ui \
+    mulpdfform.ui \
     pdftable.ui
 
 # Default rules for deployment.
@@ -41,6 +47,4 @@ win32: LIBS += -L$$PWD/poppler -llibpoppler-qt5
 RESOURCES += \
     icons.qrc
 RC_ICONS += pdf.ico
-
-#win32:QMAKE_CXXFLAGS +=/MP
 

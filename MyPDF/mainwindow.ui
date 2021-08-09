@@ -76,6 +76,7 @@
     <addaction name="fitaction"/>
     <addaction name="fitwindowsaction"/>
     <addaction name="allpageaction"/>
+    <addaction name="actionTest"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -289,6 +290,11 @@
    </property>
    <property name="text">
     <string>切换模式</string>
+   </property>
+  </action>
+  <action name="actionTest">
+   <property name="text">
+    <string>Test</string>
    </property>
   </action>
  </widget>

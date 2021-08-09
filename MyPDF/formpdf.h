@@ -1,56 +1,54 @@
 #ifndef FORMPDF_H
 #define FORMPDF_H
 
+#include <poppler-qt5.h>
+#include <QDebug>
+#include <QImage>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPainter>
+#include <QScrollBar>
 #include <QWidget>
-#include<QImage>
-#include<QLabel>
-#include<QMessageBox>
-#include<QPainter>
-#include<poppler-qt5.h>
-#include<QDebug>
-#include<QScrollBar>
 
 namespace Ui {
 class FormPdf;
 }
 
-class FormPdf : public QWidget
-{
-    Q_OBJECT
+class FormPdf : public QWidget {
+  Q_OBJECT
 
-public:
-    explicit FormPdf(QWidget *parent = nullptr);
-    ~FormPdf();
-public:
-    QImage currentshow;
+ public:
+  explicit FormPdf(QWidget* parent = nullptr);
+  ~FormPdf();
 
-    QString PdfPath;//每个页面是一个pdf文件
-    QString Pdfname;
+ public:
+  QImage currentshow;
 
-    int currentpage;//当前页面
+  QString PdfPath;  //每个页面是一个pdf文件
+  QString Pdfname;
 
-    Poppler::Document *pdfdoc ;
-    bool loadpdf();
+  int currentpage;  //当前页面
 
-    void fitwindowshow();
-    void fitpageshow();
-    void scale(int factor);
+  Poppler::Document* pdfdoc;
+  bool loadpdf();
 
-    void nextview();
-    void preview();
-    void located(int num);
+  void fitwindowshow();
+  void fitpageshow();
+  void scale(int factor);
 
-    int scaled;
+  void nextview();
+  void preview();
+  void located(int num);
 
-    int numpages;
+  int scaled;
 
-signals:
-    void pagechanged(int currentpage);
+  int numpages;
 
-private:
+ signals:
+  void pagechanged(int currentpage);
 
-    Ui::FormPdf *ui;
-
+ private:
+  Ui::FormPdf* ui;
 };
 
-#endif // FORMPDF_H
+#endif  // FORMPDF_H

@@ -1,9 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
-
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
@@ -17,22 +15,23 @@ MainWindow::MainWindow(QWidget *parent)
     Locatedpage->setMinimum(0);
     ui->toolBar->addSeparator();
 
-
-    connect(Locatedpage,SIGNAL(valueChanged(int)),this,SLOT(Locatedpage_valchanged(int)));
+    connect(Locatedpage, SIGNAL(valueChanged(int)), this,
+        SLOT(Locatedpage_valchanged(int)));
 
     Scaling = new QSlider(Qt::Horizontal);
     //设置滑动条控件的最小值
     Scaling->setMinimum(20);
-     //设置滑动条控件的最大值
-     Scaling->setMaximum(300);
-     //设置滑动条控件的值
+    //设置滑动条控件的最大值
+    Scaling->setMaximum(300);
+    //设置滑动条控件的值
     Scaling->setValue(100);
     Scaling->setMaximumWidth(100);
     Scaling->setTickPosition(QSlider::TicksBelow);
     Scaling->setTickInterval(25);
     Scaling->setSingleStep(25);
 
-     //信号和槽 当滑动条的值发生改变时，即产生一个valueChanged(int)信号 设置QLineEdit控件的显示文本
+    //信号和槽 当滑动条的值发生改变时，即产生一个valueChanged(int)信号
+    //设置QLineEdit控件的显示文本
     connect(Scaling, SIGNAL(valueChanged(int)), this, SLOT(resetScale(int)));
 
     ui->toolBar->addWidget(Locatedpage);
@@ -44,11 +43,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addSeparator();
     ui->toolBar->addWidget(Scaling);
 
-
-    //Page有关闭按钮，可被关闭
+    // Page有关闭按钮，可被关闭
     ui->tabWidget->clear();
     ui->tabWidget->setTabsClosable(true);
-
 
     //一开始将打开文件按钮设置不可使用
 
@@ -64,7 +61,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::setActionTF()
 {
     ui->nextpageaction->setEnabled(false);
@@ -78,8 +74,7 @@ void MainWindow::setActionTF()
     Locatedpage->setEnabled(false);
     pagenums->setEnabled(false);
 
-    ui->dockWidget_2->setVisible(false);//初始界面dock栏不可见
-
+    ui->dockWidget_2->setVisible(false); //初始界面dock栏不可见
 }
 
 void MainWindow::openpdf(QString filepath)
@@ -88,36 +83,34 @@ void MainWindow::openpdf(QString filepath)
 
     ui->treeWidget->clear();
 
-    if(filepath.isEmpty())return;
+    if (filepath.isEmpty())
+        return;
 
-    FormPdf * pdf = new FormPdf(this);//子页面
+    FormPdf* pdf = new FormPdf(this); //子页面
 
-    pdf->setProperty("type","page");
+    pdf->setProperty("type", "page");
 
     pdf->PdfPath = filepath;
 
-   if(pdf->loadpdf()){
+    if (pdf->loadpdf()) {
+        ui->treeWidget->clear(); //清空标签
+        get_xml_Marks(Poppler::Document::load(filepath));
+        ui->treeWidget->expandAll();
 
-       ui->treeWidget->clear();//清空标签
-       get_xml_Marks(Poppler::Document::load(filepath));
-       ui->treeWidget->expandAll();
+        ui->dockWidget_2->setVisible(true);
 
-       ui->dockWidget_2->setVisible(true);
+        ui->tabWidget->addTab(pdf, getfinaldirname(filepath));
 
-       ui->tabWidget->addTab(pdf,getfinaldirname(filepath));
+        ui->tabWidget->setCurrentWidget(pdf);
 
-       ui->tabWidget->setCurrentWidget(pdf);
+        pagenums->setText(QString("%1").arg(pdf->numpages));
 
-       pagenums->setText(QString("%1").arg(pdf->numpages));
+        Locatedpage->setMaximum(pdf->numpages - 1);
 
-       Locatedpage->setMaximum(pdf->numpages-1);
-
-   }
-   else{
-       QMessageBox::information(this,"提示","文件打开失败,可能已损坏!");
-       delete  pdf;
-   }
-
+    } else {
+        QMessageBox::information(this, "提示", "文件打开失败,可能已损坏!");
+        delete pdf;
+    }
 }
 
 void MainWindow::showpdfslot(QString filepath)
@@ -125,24 +118,26 @@ void MainWindow::showpdfslot(QString filepath)
     openpdf(filepath);
 }
 
-void MainWindow::isbelongQt(QString &dir)
+void MainWindow::isbelongQt(QString& dir)
 {
     //判断是否是QT创建的仓库
     Q_UNUSED(dir);
 }
 
-void MainWindow::showtable(){
+void MainWindow::showtable()
+{
     //启用Qlistwidget方案
-    PdfTable *showtablePDF = new PdfTable(this);
-    showtablePDF->setProperty("type","List");
-    ui->tabWidget->addTab(showtablePDF,getfinaldirname(Rootpath));
+    PdfTable* showtablePDF = new PdfTable(this);
+    showtablePDF->setProperty("type", "List");
+    ui->tabWidget->addTab(showtablePDF, getfinaldirname(Rootpath));
     ui->tabWidget->setCurrentWidget(showtablePDF);
     showtablePDF->init_read(Rootpath);
     showtablePDF->show();
 
-    connect(showtablePDF,&PdfTable::sentfilepath,this,&MainWindow::showpdfslot);//连接子窗口与父窗口
-    connect(this,&MainWindow::sentinformation_addfile,showtablePDF,&PdfTable::receive_information_addfile);
-
+    connect(showtablePDF, &PdfTable::sentfilepath, this,
+        &MainWindow::showpdfslot); //连接子窗口与父窗口
+    connect(this, &MainWindow::sentinformation_addfile, showtablePDF,
+        &PdfTable::receive_information_addfile);
 }
 
 void MainWindow::on_openfileaction_triggered()
@@ -150,30 +145,25 @@ void MainWindow::on_openfileaction_triggered()
     //打开仓库，需要识别是否是QT创建的仓库
     //更新Rootpath
     Rootpath = QFileDialog::getExistingDirectory(this);
-    if(Rootpath.isEmpty())return;
+    if (Rootpath.isEmpty())
+        return;
     showtable();
 }
-
 
 void MainWindow::inputresposityname(QString& resposity)
 {
     //输入仓库名称
     bool ok;
     QString title = "提示";
-    QString inputtitle ="仓库名称" ;
-    QInputDialog *input = new QInputDialog(this);
-    input->setMinimumSize(300,400);
+    QString inputtitle = "仓库名称";
+    QInputDialog* input = new QInputDialog(this);
+    input->setMinimumSize(300, 400);
 
-    QString text =input->getText(this,title,
-    inputtitle, QLineEdit::Normal,
-    "", &ok);
+    QString text = input->getText(this, title, inputtitle, QLineEdit::Normal, "", &ok);
     if (ok && !text.isEmpty())
         resposity = text;
     delete input;
 }
-
-
-
 
 void MainWindow::on_createlibaction_triggered()
 {
@@ -182,40 +172,39 @@ void MainWindow::on_createlibaction_triggered()
     //需要在指定目录下新建一个文件夹，之后再添加目录，即图片类别文件夹，之后的图片都是放在此文件夹下
     //只可以在图片类别文件下添加图片，且图片会被移动到此文件下。只可以在存储库下添加图片类别文件夹
     //添加组节点
-    QString dir = QFileDialog::getExistingDirectory();//打开文件选择框，选择仓库目录
+    QString dir = QFileDialog::getExistingDirectory(); //打开文件选择框，选择仓库目录
     QDir repo(dir);
-    if(dir.isEmpty()) return;
+    if (dir.isEmpty())
+        return;
     QString resposityname;
-    inputresposityname(resposityname);//获取仓库名称
+    inputresposityname(resposityname); //获取仓库名称
 
-    if(!resposityname.isEmpty())
-    {
-        repo.mkdir(resposityname);//建立仓库
-        Rootpath = dir +"/"+ resposityname;//切换根目录
+    if (!resposityname.isEmpty()) {
+        repo.mkdir(resposityname); //建立仓库
+        Rootpath = dir + "/" + resposityname; //切换根目录
         //建立resposity文件存储一些信息
-        QFile file(dir+"/"+resposityname+"/resposity.txt");
-        file.open(QIODevice::ReadWrite|QIODevice::Text);
+        QFile file(dir + "/" + resposityname + "/resposity.txt");
+        file.open(QIODevice::ReadWrite | QIODevice::Text);
         file.write("QT CREATE\n");
-        showtable();//新建仓库的时候需要切换到当前仓库
+        showtable(); //新建仓库的时候需要切换到当前仓库
     }
-
 }
 
 void MainWindow::on_openoneaction_triggered()
 {
     //打开pdf文件
-    QString filepath = QFileDialog::getOpenFileName(this,"","",tr("pdf(*.pdf)"));//打开pdf文件
-    if(!filepath.isEmpty())
+    QString filepath = QFileDialog::getOpenFileName(
+        this, "", "", tr("pdf(*.pdf)")); //打开pdf文件
+    if (!filepath.isEmpty())
         openpdf(filepath);
 }
 
-
-QString MainWindow::getfinaldirname(const QString &fulldirname)
+QString MainWindow::getfinaldirname(const QString& fulldirname)
 {
     //返回文件名
     int length = fulldirname.length();
     int add = fulldirname.lastIndexOf("/");
-    return fulldirname.right(length-add-1);
+    return fulldirname.right(length - add - 1);
 }
 
 void MainWindow::on_addfileaction_triggered()
@@ -225,100 +214,104 @@ void MainWindow::on_addfileaction_triggered()
     //过滤器
 
     QString filter = "pdf(*.pdf)";
-    QStringList filenames = QFileDialog::getOpenFileNames(this,
-                                                          "选择一个或多个文件","",filter);
+    QStringList filenames = QFileDialog::getOpenFileNames(this, "选择一个或多个文件", "", filter);
 
-    if(filenames.empty()) return;//没有选择文件就退出
+    if (filenames.empty())
+        return; //没有选择文件就退出
     QStringList newfilenames;
-    for(auto &x:filenames){
-        QString newname = Rootpath+'/'+getfinaldirname(x);
-        QFile::rename(x,newname);//移动文件
+    for (auto& x : filenames) {
+        QString newname = Rootpath + '/' + getfinaldirname(x);
+        QFile::rename(x, newname); //移动文件
         newfilenames.append(newname);
     }
 
-    emit sentinformation_addfile(newfilenames);//发射信号给子窗口
-
+    emit sentinformation_addfile(newfilenames); //发射信号给子窗口
 }
 
 void MainWindow::on_fitaction_triggered()
 {
     //适合页面显示
-   QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
-   if(subwindow==nullptr)return;
-   FormPdf *temp =(FormPdf*) subwindow;
-   if(temp->property("type")=="page") temp->fitpageshow();
-
+    QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
+    if (subwindow == nullptr)
+        return;
+    FormPdf* temp = (FormPdf*)subwindow;
+    if (temp->property("type") == "page")
+        temp->fitpageshow();
 }
 
 void MainWindow::on_fitwindowsaction_triggered()
 {
     //适合窗口显示
-    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
-    if(subwindow==nullptr)return;
-    FormPdf *temp =(FormPdf*) subwindow;
-    if(temp->property("type")=="page") temp->fitwindowshow();
+    QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
+    if (subwindow == nullptr)
+        return;
+    FormPdf* temp = (FormPdf*)subwindow;
+    if (temp->property("type") == "page")
+        temp->fitwindowshow();
 }
 
 void MainWindow::on_nextpageaction_triggered()
 {
     //下一页
-    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
-    FormPdf *temp =(FormPdf*) subwindow;
-    if(temp->property("type")=="page") temp->nextview();
+    QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
+    FormPdf* temp = (FormPdf*)subwindow;
+    if (temp->property("type") == "page")
+        temp->nextview();
 }
-
 
 void MainWindow::on_prepageaction_triggered()
 {
-//    上一页
-    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
-    FormPdf *temp =(FormPdf*) subwindow;
-    if(temp->property("type")=="page") temp->preview();
+    //    上一页
+    QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
+    FormPdf* temp = (FormPdf*)subwindow;
+    if (temp->property("type") == "page")
+        temp->preview();
 }
 
 void MainWindow::Locatedpage_valchanged(int num)
 {
     //定位到某一页
-    qDebug()<<"LOin";
+    qDebug() << "LOin";
 
-    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
-    if(subwindow==nullptr)return;
+    QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
+    if (subwindow == nullptr)
+        return;
 
     QString type = subwindow->property("type").toString();
-    if(type=="page") {
-        FormPdf *temp =(FormPdf*) subwindow;
+    if (type == "page") {
+        FormPdf* temp = (FormPdf*)subwindow;
         temp->located(num);
     }
-
 }
 
 void MainWindow::resetScale(int scale)
 {
-    //QSlider滑动缩放
-    QWidget *subwindow = ui->tabWidget->currentWidget();//获取活动窗口
-    if(subwindow==nullptr)return;
+    // QSlider滑动缩放
+    QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
+    if (subwindow == nullptr)
+        return;
 
-    FormPdf *temp =(FormPdf*) subwindow;
-    if(temp->property("type")=="page") temp->scale(scale);
-
-
+    FormPdf* temp = (FormPdf*)subwindow;
+    if (temp->property("type") == "page")
+        temp->scale(scale);
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     //切换子窗口时发射
     //设置按钮可见性
-    qDebug()<<"inT"<<ui->tabWidget->count();
+    qDebug() << "inT" << ui->tabWidget->count();
 
-    if(ui->tabWidget->count()==0){
+    if (ui->tabWidget->count() == 0) {
         setActionTF();
         return;
     }
-    QWidget *subwindow = ui->tabWidget->widget(index);//获取活动窗口
-    if(subwindow==nullptr)return;
+    QWidget* subwindow = ui->tabWidget->widget(index); //获取活动窗口
+    if (subwindow == nullptr)
+        return;
     QString type = subwindow->property("type").toString();
-    if(type=="page"){
-        FormPdf *lastpdf = static_cast<FormPdf*>(subwindow);
+    if (type == "page") {
+        FormPdf* lastpdf = static_cast<FormPdf*>(subwindow);
         ui->nextpageaction->setEnabled(true);
         ui->prepageaction->setEnabled(true);
         ui->addfileaction->setEnabled(false);
@@ -329,7 +322,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         Locatedpage->setEnabled(true);
         Scaling->setEnabled(true);
         pagenums->setEnabled(true);
-        Locatedpage->setMaximum(lastpdf->numpages-1);
+        Locatedpage->setMaximum(lastpdf->numpages - 1);
         pagenums->setText(QString("%1").arg(lastpdf->numpages));
 
         ui->treeWidget->clear();
@@ -337,8 +330,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         ui->dockWidget_2->setVisible(true);
         ui->treeWidget->expandAll();
 
-    }
-    else {
+    } else {
         ui->nextpageaction->setEnabled(false);
         ui->prepageaction->setEnabled(false);
         ui->addfileaction->setEnabled(true);
@@ -349,9 +341,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         Locatedpage->setEnabled(false);
         pagenums->setEnabled(false);
         ui->dockWidget_2->setVisible(false);
-
     }
-
 }
 /*
 void MainWindow::on_allpageaction_triggered()
@@ -401,73 +391,70 @@ void MainWindow::on_allpageaction_triggered()
 
 }
 */
-void MainWindow::get_xml_Marks(Poppler::Document *pdfdoc)
+void MainWindow::get_xml_Marks(Poppler::Document* pdfdoc)
 {
-
     QDomDocument* doc = pdfdoc->toc();
-    if(doc==nullptr) return;
+    if (doc == nullptr)
+        return;
 
     ui->treeWidget->setColumnCount(1);
     ui->treeWidget->setWindowTitle("书签");
     ui->treeWidget->setSizeAdjustPolicy(QTreeWidget::AdjustToContents);
     //获取第一个节点
-    qDebug()<<doc->toString();
+    qDebug() << doc->toString();
 
     QDomNode node = doc->firstChild();
     while (!node.isNull()) {
         QDomElement e = node.toElement();
-        QTreeWidgetItem *item  = new QTreeWidgetItem();
-        item->setData(0,Qt::UserRole,e.attribute("Destination"));
-        item->setText(0,e.tagName());
+        QTreeWidgetItem* item = new QTreeWidgetItem();
+        item->setData(0, Qt::UserRole, e.attribute("Destination"));
+        item->setText(0, e.tagName());
         ui->treeWidget->addTopLevelItem(item);
-        if(node.hasChildNodes())
-            read_xml(node.firstChild(),item);
+        if (node.hasChildNodes())
+            read_xml(node.firstChild(), item);
         node = node.nextSibling();
     }
 }
 
-void MainWindow::read_xml(QDomNode node, QTreeWidgetItem * parent)
+void MainWindow::read_xml(QDomNode node, QTreeWidgetItem* parent)
 {
-
-     // try to convert the node to an element.
+    // try to convert the node to an element.
     while (!node.isNull()) {
         QDomElement e = node.toElement();
-        if (!e.isNull())
-        {
-//           qDebug() << e.tagName()<<e.attribute("Destination"); // the node really is an element.
+        if (!e.isNull()) {
+            //           qDebug() << e.tagName()<<e.attribute("Destination"); // the
+            //           node really is an element.
 
-           QTreeWidgetItem *item  = new QTreeWidgetItem();
-           QString info = e.attribute(("Destination"));
-           QString address="";
-           for(int i=2;i<info.size();i++){
-               if(info[i]==';')break;
-               address +=info[i];
-           }
-           item->setData(0,Qt::UserRole,address.toInt());//存储位置
+            QTreeWidgetItem* item = new QTreeWidgetItem();
+            QString info = e.attribute(("Destination"));
+            QString address = "";
+            for (int i = 2; i < info.size(); i++) {
+                if (info[i] == ';')
+                    break;
+                address += info[i];
+            }
+            item->setData(0, Qt::UserRole, address.toInt()); //存储位置
 
-           item->setText(0,e.tagName());
-           if(parent==nullptr)
-                ui->treeWidget ->addTopLevelItem(item);
-           else parent->addChild(item);
+            item->setText(0, e.tagName());
+            if (parent == nullptr)
+                ui->treeWidget->addTopLevelItem(item);
+            else
+                parent->addChild(item);
 
-           if(e.hasChildNodes()) {
-               //递归读取子节点
-               read_xml(e.firstChild(),item);
-           }
+            if (e.hasChildNodes()) {
+                //递归读取子节点
+                read_xml(e.firstChild(), item);
+            }
         }
         node = node.nextSibling();
     }
     return;
 }
 
-
-
-
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
     //关闭页面
     ui->tabWidget->widget(index)->close();
-
 }
 
 void MainWindow::setLocatedpage(int index)
@@ -476,16 +463,35 @@ void MainWindow::setLocatedpage(int index)
     Locatedpage->setValue(index);
 }
 
-
-void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
+void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem* item, int column)
 {
     //点击书签，跳转到指定位置
-    int index = item->data(0,Qt::UserRole).toInt();
-    QWidget * subwindow = ui->tabWidget->currentWidget();
-    if(subwindow->property("type")=="page"){
-        FormPdf *lastpdf = static_cast<FormPdf*>(subwindow);
+    int index = item->data(0, Qt::UserRole).toInt();
+    QWidget* subwindow = ui->tabWidget->currentWidget();
+    if (subwindow->property("type") == "page") {
+        FormPdf* lastpdf = static_cast<FormPdf*>(subwindow);
         lastpdf->located(index);
     }
-
 }
 
+void MainWindow::on_actionTest_triggered()
+{
+    //测试新功能
+    QString filepath = QFileDialog::getOpenFileName(
+        this, "", "", tr("pdf(*.pdf)")); //打开pdf文件
+    if (!filepath.isEmpty()) {
+        MulPDFForm* PDFform = new MulPDFForm();
+        PDFform->openPDF(filepath);
+        //        PDFform->setWindowFlag(Qt::Widget, true);
+        //        PDFform->show();
+        ui->treeWidget->clear(); //清空标签
+        get_xml_Marks(Poppler::Document::load(filepath));
+        ui->treeWidget->expandAll();
+
+        ui->dockWidget_2->setVisible(true);
+
+        ui->tabWidget->addTab(PDFform, getfinaldirname(filepath));
+
+        ui->tabWidget->setCurrentWidget(PDFform);
+    }
+}
