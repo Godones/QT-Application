@@ -9,19 +9,20 @@ PdfTable::PdfTable(QWidget* parent)
     this->setAttribute(Qt::WA_DeleteOnClose); //关闭销毁
     init_set();
     setMouseTracking(true); //开启鼠标追踪功能
+    PageRender = new TitlepageRender(this);
     connectSlot();
 }
 
 PdfTable::~PdfTable()
 {
     delete ui;
-    qDebug() << "TAbleDelete";
+    //    qDebug() << "TAbleDelete";
 }
 
 void PdfTable::connectSlot()
 {
     //连接信号
-    //    connect(ui->listWidget,SIGNAL(itemEntered(QTableWidgetItem *)),this,SLOT(on_listWidget_itemEntered(QListWidgetItem *)));
+    connect(PageRender, &TitlepageRender::pagerendered, this, &PdfTable::createtable);
 }
 
 void PdfTable::init_set()
@@ -47,23 +48,6 @@ void PdfTable::init_set()
     //    ui->listWidget->setTextElideMode(Qt::ElideNone);
 }
 
-QImage PdfTable::getImage(QString& filepath)
-{
-    //获得pdf封面大小
-    Poppler::Document* pdfdoc = Poppler::Document::load(filepath); //只添加可以打开的pdf文件
-    if (pdfdoc != nullptr) {
-        pdfdoc->setRenderBackend(Poppler::Document::SplashBackend);
-        pdfdoc->setRenderHint(Poppler::Document::Antialiasing);
-        pdfdoc->setRenderHint(Poppler::Document::TextAntialiasing);
-        pdfdoc->setRenderHint(Poppler::Document::ThinLineShape);
-        QSize size = pdfdoc->page(0)->pageSize();
-        float weightScale = (float)wideCover / size.width();
-        float heightScale = (float)heightCover / size.height();
-        QImage image = pdfdoc->page(0)->renderToImage(72 * weightScale, 72 * heightScale, 0, 0, wideCover, heightCover);
-        if (!image.isNull())
-            return image;
-    }
-}
 void PdfTable::init_read(QString path)
 {
     //显示path文件夹下的所有pdf文件
@@ -79,54 +63,37 @@ void PdfTable::init_read(QString path)
     //QMimeDatabase db;//判断文件类型
     //QMimeType mime = db.mimeTypeForFile(allpdf[i]);
     //if(mime.name()!="application/pdf") continue;
+
     for (int i = 0; i < allpdf.size(); i++) {
         QString path = dir.absoluteFilePath(allpdf[i]);
-        QImage image = getImage(path);
-        ico.push_back(image);
         name.push_back(path);
     }
-    QFileInfo info(path);
-    //    setWindowTitle(info.fileName());
-    createtable();
+
+    PageRender->set_data(name);
 }
 
-void PdfTable::createtable()
+void PdfTable::createtable(QPixmap titlepage, QString okpdfdir)
 {
 
     QFileInfo info;
 
-    qDebug() << ico.size();
-    for (int i = 0; i < ico.size(); i++) {
-        QListWidgetItem* item = new QListWidgetItem;
-        item->setIcon(QIcon(QPixmap::fromImage(ico[i])));
-        item->setSizeHint(QSize(wideCover, heightCover + 50));
-        item->setData(Qt::UserRole, QVariant(name[i]));
-        info.setFile(name[i]);
-        item->setText(info.fileName());
-        item->setToolTip(info.fileName());
-        //        item->setTextAlignment(Qt::AlignCenter);
-        item->setTextAlignment(Qt::AlignJustify);
-        ui->listWidget->addItem(item);
-    }
+    QListWidgetItem* item = new QListWidgetItem;
+    item->setIcon(QIcon(titlepage));
+    item->setSizeHint(QSize(titlepage.width(), titlepage.height() + 50));
+    item->setData(Qt::UserRole, QVariant(okpdfdir));
+    info.setFile(okpdfdir);
+    item->setText(info.fileName());
+    item->setToolTip(info.fileName());
+    //        item->setTextAlignment(Qt::AlignCenter);
+    item->setTextAlignment(Qt::AlignJustify);
+    ui->listWidget->addItem(item);
 }
 
 void PdfTable::receive_information_addfile(QStringList pdffiles)
 {
     //接收来自主窗口增加文件发射的信号;
-    QFileInfo info;
-    for (int i = 0; i < pdffiles.size(); i++) {
-        QImage image = getImage(pdffiles[i]);
-        QListWidgetItem* item = new QListWidgetItem;
-        item->setIcon(QIcon(QPixmap::fromImage(image)));
-        item->setSizeHint(QSize(wideCover, heightCover + 30));
-        item->setData(Qt::UserRole, QVariant(pdffiles[i]));
-        info.setFile(pdffiles[i]);
-        item->setText(info.fileName());
-        item->setToolTip(info.fileName());
-        //        item->setTextAlignment(Qt::AlignCenter);
-        item->setTextAlignment(Qt::AlignJustify);
-        ui->listWidget->addItem(item);
-    }
+    auto dir = pdffiles.toVector();
+    PageRender->set_data(dir);
 }
 
 void PdfTable::on_listWidget_itemEntered(QListWidgetItem* item)

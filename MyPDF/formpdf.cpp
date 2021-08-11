@@ -1,6 +1,5 @@
 #include "formpdf.h"
 #include "ui_formpdf.h"
-#include <QScreen>
 
 FormPdf::FormPdf(QWidget* parent)
     : QWidget(parent)
@@ -16,7 +15,7 @@ FormPdf::FormPdf(QWidget* parent)
 FormPdf::~FormPdf()
 {
     delete ui;
-    qDebug() << "FormPdfDelete";
+    //    qDebug() << "FormPdfDelete";
 }
 
 bool FormPdf::loadpdf()
@@ -70,6 +69,33 @@ void FormPdf::show()
         //缓存中不存在则需要先在子进程中加载
         m_PageRender->requestPage(currentpage, m_zoom);
     }
+}
+
+void FormPdf::mouseMoveEvent(QMouseEvent* event)
+{
+    //未开启鼠标奥追踪的情况下，当鼠标按下时才能触发
+    if (mouse_is_press) {
+        int currentval_y = ui->scrollArea->verticalScrollBar()->value() + y - event->y();
+        //鼠标向下移动，则y < event.y,页面向上移动
+        ui->scrollArea->verticalScrollBar()->setValue(currentval_y);
+        y = event->y();
+        int currentval_x = ui->scrollArea->horizontalScrollBar()->value() + x - event->x();
+        ui->scrollArea->horizontalScrollBar()->setValue(currentval_x);
+        //        qDebug() << PDF->size() << area->size();
+    }
+}
+
+void FormPdf::mousePressEvent(QMouseEvent* event)
+{
+    mouse_is_press = true;
+    y = event->y();
+    x = event->x();
+}
+
+void FormPdf::mouseReleaseEvent(QMouseEvent* event)
+{
+    Q_UNUSED(event);
+    mouse_is_press = false;
 }
 
 void FormPdf::zoomIn()

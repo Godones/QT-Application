@@ -76,11 +76,11 @@ private slots:
 
     void on_treeWidget_itemClicked(QTreeWidgetItem* item, int column);
 
-    void on_actionTest_triggered();
-
     void on_bigaction_triggered();
 
     void on_smalleraction_triggered();
+
+    void on_documentaction_triggered();
 
 private:
     Ui::MainWindow* ui;

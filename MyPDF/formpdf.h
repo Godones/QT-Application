@@ -6,11 +6,13 @@
 #include <QImage>
 #include <QLabel>
 #include <QMessageBox>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
 #include <QSizeF>
 #include <QWidget>
 #include <poppler-qt5.h>
+
 namespace Ui {
 class FormPdf;
 }
@@ -63,6 +65,14 @@ private:
     QSizeF getpagesize(int index);
 
     void show();
+
+protected:
+    int x;
+    int y;
+    bool mouse_is_press; //鼠标被按下
+    void mouseMoveEvent(QMouseEvent* event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
 };
 
 #endif // FORMPDF_H

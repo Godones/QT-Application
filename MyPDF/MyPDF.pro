@@ -18,7 +18,8 @@ SOURCES += \
     mulpage.cpp \
     mulpdfform.cpp \
     pagerender.cpp \
-    pdftable.cpp
+    pdftable.cpp \
+    titlepagerender.cpp
 
 HEADERS += \
     dialogpdf.h \
@@ -27,7 +28,8 @@ HEADERS += \
     mulpage.h \
     mulpdfform.h \
     pagerender.h \
-    pdftable.h
+    pdftable.h \
+    titlepagerender.h
 
 FORMS += \
     dialogpdf.ui \

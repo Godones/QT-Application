@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget* parent)
     ui->tabWidget->setMovable(true);
 
     //设置按钮可见性
-    setActionTF();
+    //    setActionTF();
 }
 
 MainWindow::~MainWindow()
@@ -211,7 +211,7 @@ void MainWindow::on_addfileaction_triggered()
         return; //没有选择文件就退出
     QStringList newfilenames;
     for (auto& x : filenames) {
-        QString newname = Rootpath + '/' + getfinaldirname(x);
+        QString newname = table->respdir + '/' + getfinaldirname(x);
         QFile::rename(x, newname); //移动文件
         newfilenames.append(newname);
     }
@@ -290,7 +290,6 @@ void MainWindow::Locatedpage_valchanged()
     //定位到某一页
     //获取输入框的值
     bool ok;
-    ;
     int num = inputpage->text().toInt(&ok);
     if (!ok)
         return; //如果转化成功
@@ -343,7 +342,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 {
     //切换子窗口时发射
     //设置按钮可见性
-    qDebug() << "inT" << ui->tabWidget->count();
+    //    qDebug() << "inT" << ui->tabWidget->count();
 
     if (ui->tabWidget->count() == 0) {
         setActionTF();
@@ -420,7 +419,6 @@ void MainWindow::on_allpageaction_triggered()
 {
     //切换模式
     //单页还是多页显示
-    qDebug("inA");
 
     QWidget* subwindow = ui->tabWidget->currentWidget(); //获取活动窗口
     if (subwindow == nullptr)
@@ -463,7 +461,6 @@ void MainWindow::on_allpageaction_triggered()
         ui->tabWidget->insertTab(index, pdf, getfinaldirname(pdf->PdfPath)); //插入分页
         ui->tabWidget->setCurrentWidget(pdf); //显示当前页
         pdf->locatepage(current);
-        qDebug() << current << "~~~~~";
     }
 }
 
@@ -484,7 +481,9 @@ void MainWindow::get_xml_Marks(QString PdfPath)
     while (!node.isNull()) {
         QDomElement e = node.toElement();
         QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setData(0, Qt::UserRole, e.attribute("Destination"));
+        QString info = e.attribute(("Destination"));
+        info = info.split(";").at(1);
+        item->setData(0, Qt::UserRole, info.toInt() - 1);
         item->setText(0, e.tagName());
         ui->treeWidget->addTopLevelItem(item);
         if (node.hasChildNodes())
@@ -504,14 +503,8 @@ void MainWindow::read_xml(QDomNode node, QTreeWidgetItem* parent)
 
             QTreeWidgetItem* item = new QTreeWidgetItem();
             QString info = e.attribute(("Destination"));
-            QString address = "";
-            for (int i = 2; i < info.size(); i++) {
-                if (info[i] == ';')
-                    break;
-                address += info[i];
-            }
-            item->setData(0, Qt::UserRole, address.toInt()); //存储位置
-
+            info = info.split(";").at(1);
+            item->setData(0, Qt::UserRole, info.toInt() - 1); //存储位置
             item->setText(0, e.tagName());
             if (parent == nullptr)
                 ui->treeWidget->addTopLevelItem(item);
@@ -543,25 +536,13 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem* item, int column)
     if (subwindow->property("type") == "page") {
         FormPdf* lastpdf = static_cast<FormPdf*>(subwindow);
         lastpdf->locatepage(index);
+    } else {
+        MulPDFForm* lastpdf = static_cast<MulPDFForm*>(subwindow);
+        lastpdf->locatepage(index);
     }
 }
 
-void MainWindow::on_actionTest_triggered()
+void MainWindow::on_documentaction_triggered()
 {
-    //测试新功能
-    QString filepath = QFileDialog::getOpenFileName(
-        this, "", "", tr("pdf(*.pdf)")); //打开pdf文件
-    if (!filepath.isEmpty()) {
-        MulPDFForm* PDFform = new MulPDFForm();
-        PDFform->setProperty("type", "Mul");
-        PDFform->openPDF(filepath);
-        //        PDFform->setWindowFlag(Qt::Widget, true);
-        //        PDFform->show();
-        ui->treeWidget->clear(); //清空标签
-        get_xml_Marks(filepath);
-        ui->treeWidget->expandAll();
-        ui->dockWidget_2->setVisible(true);
-        ui->tabWidget->addTab(PDFform, getfinaldirname(filepath));
-        ui->tabWidget->setCurrentWidget(PDFform);
-    }
+    QMessageBox::information(this, "应用介绍", "等等再写");
 }

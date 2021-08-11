@@ -48,6 +48,7 @@ private:
     Ui::MulPDFForm* ui;
     bool mouse_is_press; //鼠标被按下
     int y; //鼠标按下时的值
+    int x;
 
     MulPage* PDF;
     QScrollArea* area;

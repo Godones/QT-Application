@@ -1,6 +1,7 @@
 #ifndef PDFTABLE_H
 #define PDFTABLE_H
 
+#include "titlepagerender.h"
 #include <QAbstractItemView>
 #include <QDebug>
 #include <QDir>
@@ -22,10 +23,8 @@ class PdfTable : public QWidget {
 private:
     QVector<QImage> ico; //存储所有能打开的pdf图标
     QVector<QString> name; //存储名字后续显示
-    const int wideCover = 220; //展示封面大小
-    const int heightCover = 300;
-    const int wideGap = 10;
-    const int heightGap = 80;
+
+    TitlepageRender* PageRender;
 
 public:
     explicit PdfTable(QWidget* parent = nullptr);
@@ -35,8 +34,9 @@ public:
     void init_read(QString path);
     //初始设置
     void init_set();
-    QImage getImage(QString& filepath);
-    void createtable();
+
+    void createtable(QPixmap, QString);
+
     void receive_information_addfile(QStringList pdffiles);
 
     QString respdir;
@@ -53,6 +53,8 @@ private:
     Ui::PdfTable* ui;
 
     void connectSlot();
+    const qreal wideCover = 220; //展示封面大小
+    const qreal heightCover = 300;
 };
 
 #endif // PDFTABLE_H

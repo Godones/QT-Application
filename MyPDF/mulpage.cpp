@@ -97,7 +97,7 @@ void MulPage::zoomOut()
 void MulPage::locatepage(int page)
 {
     //跳转到某一页
-    if (page > 0 && page < m_totalPages) {
+    if (page >= 0 && page < m_totalPages) {
         m_pageIndex = page;
     }
 }
@@ -150,7 +150,7 @@ void MulPage::invalidate()
     m_totalSize = totalSize.toSize();
 
     setMinimumSize(m_totalSize); //设置窗口最小大小
-    qDebug() << "pagesize: " << m_totalSize << " " << m_totalPages;
+    //    qDebug() << "pagesize: " << m_totalSize << " " << m_totalPages;
     m_pageCache.clear();
     m_cachedPagesLRU.clear();
     update(); //更新窗口
@@ -197,8 +197,8 @@ void MulPage::paintEvent(QPaintEvent* event)
 
             painter.setRenderHint(QPainter::Antialiasing, true); //抗锯齿
             painter.drawPixmap((width() - timage.width()) / 2, y, QPixmap::fromImage(timage));
-            getPage(t_vtop, t_vbottom);
-            emit updateinfo(page, m_totalPages, m_zoom); //更新内容
+            getPage(t_top, t_bottom);
+            emit updateinfo(m_pageIndex, m_totalPages, m_zoom); //更新内容
 
         } else {
             //缓存中不存在
@@ -216,10 +216,12 @@ void MulPage::paintEvent(QPaintEvent* event)
 int MulPage::getPage(int t_vtop, int t_vbottom)
 {
     //获取视图中央的页面索引
-    int y = 0, page = 0;
+    int y = m_pageSpacing;
+    int page = 0;
     int center = (t_vtop + t_vbottom) / 2;
+
     for (page = 0; page < m_totalPages; page++) {
-        int t_size = m_pageSpacing + pageSize(page).toSize().height();
+        int t_size = m_pageSpacing + pageSize(page).height();
         if (y == t_vtop) {
             m_pageIndex = page;
             break;
@@ -241,6 +243,7 @@ int MulPage::getPage(int t_vtop, int t_vbottom)
             m_pageIndex = page - 1;
             break;
         }
+        y += t_size;
     }
     return m_pageIndex;
 }

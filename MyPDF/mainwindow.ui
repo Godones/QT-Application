@@ -76,12 +76,12 @@
     <addaction name="fitaction"/>
     <addaction name="fitwindowsaction"/>
     <addaction name="allpageaction"/>
-    <addaction name="actionTest"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
      <string>帮助</string>
     </property>
+    <addaction name="documentaction"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -295,6 +295,11 @@
   <action name="actionTest">
    <property name="text">
     <string>Test</string>
+   </property>
+  </action>
+  <action name="documentaction">
+   <property name="text">
+    <string>文档</string>
    </property>
   </action>
  </widget>

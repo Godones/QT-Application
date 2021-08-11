@@ -96,12 +96,13 @@ void MulPDFForm::mouseMoveEvent(QMouseEvent* event)
 {
     //未开启鼠标奥追踪的情况下，当鼠标按下时才能触发
     if (mouse_is_press) {
-        int currentval = area->verticalScrollBar()->value() + y - event->y();
+        int currentval_y = area->verticalScrollBar()->value() + y - event->y();
         //鼠标向下移动，则y < event.y,页面向上移动
-        area->verticalScrollBar()->setValue(currentval);
+        area->verticalScrollBar()->setValue(currentval_y);
         y = event->y();
-
-        qDebug() << PDF->size() << area->size();
+        int currentval_x = area->horizontalScrollBar()->value() + x - event->x();
+        area->horizontalScrollBar()->setValue(currentval_x);
+        //        qDebug() << PDF->size() << area->size();
     }
 }
 
@@ -109,6 +110,7 @@ void MulPDFForm::mousePressEvent(QMouseEvent* event)
 {
     mouse_is_press = true;
     y = event->y();
+    x = event->x();
 }
 
 void MulPDFForm::mouseReleaseEvent(QMouseEvent* event)
