@@ -21,10 +21,8 @@ void TitlepageRender::run()
 
 void TitlepageRender::render()
 {
-    QVector<QPixmap> titilepage;
-    QVector<QString> okpdfdir;
-    Poppler::Document* document;
 
+    Poppler::Document* document;
     for (auto x : Pdfpath) {
         document = Poppler::Document::load(x);
         if (document == nullptr)

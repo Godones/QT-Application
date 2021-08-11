@@ -1,5 +1,5 @@
 #include "pagerender.h"
-
+#include <QtDebug>
 PageRender::PageRender(QObject* parent)
     : QThread(parent)
     , c_page(0)
@@ -27,12 +27,11 @@ void PageRender::run()
 
 void PageRender::Renderpage(int page)
 {
+
     if (c_document == nullptr)
         return;
     Poppler::Page* tpage = c_document->page(page);
     QSizeF sizepage = tpage->pageSizeF();
-    QImage image = tpage->renderToImage(72 * c_zoom, 72 * c_zoom, 0, 0,
-        sizepage.width() * c_zoom,
-        sizepage.height() * c_zoom);
+    QImage image = tpage->renderToImage(72.0 * c_zoom, 72.0 * c_zoom, 0, 0, sizepage.width() * c_zoom, sizepage.height() * c_zoom);
     emit pageReady(page, c_zoom, image);
 }

@@ -482,8 +482,10 @@ void MainWindow::get_xml_Marks(QString PdfPath)
         QDomElement e = node.toElement();
         QTreeWidgetItem* item = new QTreeWidgetItem();
         QString info = e.attribute(("Destination"));
-        info = info.split(";").at(1);
-        item->setData(0, Qt::UserRole, info.toInt() - 1);
+        qDebug() << info;
+        QStringList infolist = info.split(";");
+        if (infolist.size() > 2)
+            item->setData(0, Qt::UserRole, infolist.at(1).toInt() - 1);
         item->setText(0, e.tagName());
         ui->treeWidget->addTopLevelItem(item);
         if (node.hasChildNodes())
@@ -503,8 +505,10 @@ void MainWindow::read_xml(QDomNode node, QTreeWidgetItem* parent)
 
             QTreeWidgetItem* item = new QTreeWidgetItem();
             QString info = e.attribute(("Destination"));
-            info = info.split(";").at(1);
-            item->setData(0, Qt::UserRole, info.toInt() - 1); //存储位置
+            QStringList infolist = info.split(";");
+            if (infolist.size() > 2)
+
+                item->setData(0, Qt::UserRole, infolist.at(1).toInt() - 1); //存储位置
             item->setText(0, e.tagName());
             if (parent == nullptr)
                 ui->treeWidget->addTopLevelItem(item);

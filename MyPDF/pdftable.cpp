@@ -110,5 +110,6 @@ void PdfTable::on_listWidget_itemDoubleClicked(QListWidgetItem* item)
     //打开文件
     //    QMessageBox::information(this,"","test!!!!!");
     QString pdfpath = item->data(Qt::UserRole).toString();
+
     emit sentfilepath(pdfpath); //发送自定义信号给主窗口
 }
