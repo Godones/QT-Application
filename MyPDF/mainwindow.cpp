@@ -5,6 +5,7 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
     setCentralWidget(ui->tabWidget);
     //设置应用标题
@@ -35,7 +36,6 @@ MainWindow::MainWindow(QWidget* parent)
     ui->tabWidget->clear();
     ui->tabWidget->setTabsClosable(true);
 
-    ui->dockWidget_2->setWindowTitle("书签");
     ui->tabWidget->setMovable(true);
 
     //设置按钮可见性
@@ -58,34 +58,40 @@ void MainWindow::setActionTF()
     allpages->setEnabled(false);
     ui->bigaction->setEnabled(false);
     ui->smalleraction->setEnabled(false);
-
     inputpage->setEnabled(false);
     zoomshow->setEnabled(false);
-    ui->dockWidget_2->setVisible(false); //初始界面dock栏不可见
 }
 
 void MainWindow::openpdf(QString filepath)
 {
     //打开pdf并展示
-    ui->treeWidget->clear();
-
     if (filepath.isEmpty())
         return;
-
     FormPdf* pdf = new FormPdf(this); //子页面
     pdf->setProperty("type", "page");
     pdf->PdfPath = filepath;
     if (pdf->loadpdf()) {
-        ui->treeWidget->clear(); //清空标签
-        get_xml_Marks(filepath); //加载标签
-        //        ui->treeWidget->expandAll(); //展开所有标签
-        //        if (ui->treeWidget->topLevelItemCount() == 0) {
-        //            ui->dockWidget_2->setVisible(false);
-        //        }
         ui->tabWidget->addTab(pdf, getfinaldirname(filepath));
         ui->tabWidget->setCurrentWidget(pdf);
         connect(pdf, &FormPdf::pagechanged, this, &MainWindow::updateinfo);
 
+    } else {
+        QMessageBox::information(this, "提示", "文件打开失败,可能已损坏!");
+        delete pdf;
+    }
+}
+
+void MainWindow::openpdfMul(QString filepath)
+{
+
+    if (filepath.isEmpty())
+        return;
+    MulPDFForm* pdf = new MulPDFForm(this);
+    pdf->setProperty("type", "Mul");
+    if (pdf->openPDF(filepath)) {
+        ui->tabWidget->addTab(pdf, getfinaldirname(filepath));
+        ui->tabWidget->setCurrentWidget(pdf);
+        connect(pdf, &MulPDFForm::pagechanged, this, &MainWindow::updateinfo);
     } else {
         QMessageBox::information(this, "提示", "文件打开失败,可能已损坏!");
         delete pdf;
@@ -103,7 +109,7 @@ void MainWindow::updateinfo(int index, int totalpages, qreal zoom)
 
 void MainWindow::showpdfslot(QString filepath)
 {
-    openpdf(filepath); //在table页面双击打开文件
+    openpdfMul(filepath); //在table页面双击打开文件
 }
 
 void MainWindow::isbelongQt(QString& dir)
@@ -125,8 +131,6 @@ void MainWindow::showtable(QString dir)
 
     connect(showtablePDF, &PdfTable::sentfilepath, this,
         &MainWindow::showpdfslot); //连接子窗口与父窗口
-    //    connect(this, &MainWindow::sentinformation_addfile, showtablePDF,
-    //        &PdfTable::receive_information_addfile);
 }
 
 void MainWindow::on_openfileaction_triggered()
@@ -185,7 +189,7 @@ void MainWindow::on_openoneaction_triggered()
     QString filepath = QFileDialog::getOpenFileName(
         this, "", "", tr("pdf(*.pdf)")); //打开pdf文件
     if (!filepath.isEmpty())
-        openpdf(filepath);
+        openpdfMul(filepath);
 }
 
 QString MainWindow::getfinaldirname(const QString& fulldirname)
@@ -382,20 +386,10 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         ui->bigaction->setEnabled(true);
         ui->smalleraction->setEnabled(true);
 
-        ui->treeWidget->clear();
-        get_xml_Marks(file);
-
         allpages->setText("/" + QString("%1").arg(totalpages - 1)); //总页面
         inputpage->setText(QString("%1").arg(currentpage)); //当前页面
         inputpage->setMaximumWidth(50);
         zoomshow->setText(QString("%1").arg(int(zoom * 100)));
-
-        if (ui->treeWidget->topLevelItemCount() == 0) {
-            ui->dockWidget_2->close();
-        } else {
-            ui->dockWidget_2->setVisible(true);
-            ui->treeWidget->expandAll();
-        }
 
     }
 
@@ -411,7 +405,6 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         allpages->setEnabled(false);
         inputpage->setEnabled(false);
         zoomshow->setEnabled(false);
-        ui->dockWidget_2->setVisible(false);
     }
 }
 
@@ -464,86 +457,10 @@ void MainWindow::on_allpageaction_triggered()
     }
 }
 
-void MainWindow::get_xml_Marks(QString PdfPath)
-{
-    Poppler::Document* pdfdoc = Poppler::Document::load(PdfPath);
-    QDomDocument* doc = pdfdoc->toc();
-    if (doc == nullptr)
-        return;
-
-    ui->treeWidget->setColumnCount(1);
-    ui->treeWidget->setWindowTitle("书签");
-    ui->treeWidget->setSizeAdjustPolicy(QTreeWidget::AdjustToContents);
-    //获取第一个节点
-    //    qDebug() << doc->toString();
-
-    QDomNode node = doc->firstChild();
-    while (!node.isNull()) {
-        QDomElement e = node.toElement();
-        QTreeWidgetItem* item = new QTreeWidgetItem();
-        QString info = e.attribute(("Destination"));
-        qDebug() << info;
-        QStringList infolist = info.split(";");
-        if (infolist.size() > 2)
-            item->setData(0, Qt::UserRole, infolist.at(1).toInt() - 1);
-        item->setText(0, e.tagName());
-        ui->treeWidget->addTopLevelItem(item);
-        if (node.hasChildNodes())
-            read_xml(node.firstChild(), item);
-        node = node.nextSibling();
-    }
-}
-
-void MainWindow::read_xml(QDomNode node, QTreeWidgetItem* parent)
-{
-    // try to convert the node to an element.
-    while (!node.isNull()) {
-        QDomElement e = node.toElement();
-        if (!e.isNull()) {
-            //           qDebug() << e.tagName()<<e.attribute("Destination"); // the
-            //           node really is an element.
-
-            QTreeWidgetItem* item = new QTreeWidgetItem();
-            QString info = e.attribute(("Destination"));
-            QStringList infolist = info.split(";");
-            if (infolist.size() > 2)
-
-                item->setData(0, Qt::UserRole, infolist.at(1).toInt() - 1); //存储位置
-            item->setText(0, e.tagName());
-            if (parent == nullptr)
-                ui->treeWidget->addTopLevelItem(item);
-            else
-                parent->addChild(item);
-
-            if (e.hasChildNodes()) {
-                //递归读取子节点
-                read_xml(e.firstChild(), item);
-            }
-        }
-        node = node.nextSibling();
-    }
-    return;
-}
-
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
     //关闭页面
     ui->tabWidget->widget(index)->close();
-}
-
-void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem* item, int column)
-{
-    //点击书签，跳转到指定位置
-    Q_UNUSED(column);
-    int index = item->data(0, Qt::UserRole).toInt();
-    QWidget* subwindow = ui->tabWidget->currentWidget();
-    if (subwindow->property("type") == "page") {
-        FormPdf* lastpdf = static_cast<FormPdf*>(subwindow);
-        lastpdf->locatepage(index);
-    } else {
-        MulPDFForm* lastpdf = static_cast<MulPDFForm*>(subwindow);
-        lastpdf->locatepage(index);
-    }
 }
 
 void MainWindow::on_documentaction_triggered()

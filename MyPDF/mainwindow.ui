@@ -35,6 +35,9 @@
       <property name="styleSheet">
        <string notr="true"/>
       </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
         <string>Tab 1</string>
@@ -92,15 +95,22 @@
     <font>
      <family>Consolas</family>
      <pointsize>9</pointsize>
+     <stylestrategy>PreferDefault</stylestrategy>
     </font>
+   </property>
+   <property name="mouseTracking">
+    <bool>false</bool>
    </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
    <property name="iconSize">
     <size>
      <width>30</width>
-     <height>30</height>
+     <height>24</height>
     </size>
    </property>
    <property name="toolButtonStyle">
@@ -123,54 +133,6 @@
    <addaction name="nextpageaction"/>
    <addaction name="fitaction"/>
    <addaction name="fitwindowsaction"/>
-  </widget>
-  <widget class="QDockWidget" name="dockWidget_2">
-   <property name="features">
-    <set>QDockWidget::DockWidgetClosable</set>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea</set>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_2">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QTreeWidget" name="treeWidget">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <attribute name="headerVisible">
-        <bool>false</bool>
-       </attribute>
-       <column>
-        <property name="text">
-         <string notr="true">1</string>
-        </property>
-       </column>
-      </widget>
-     </item>
-    </layout>
-   </widget>
   </widget>
   <action name="openfileaction">
    <property name="icon">

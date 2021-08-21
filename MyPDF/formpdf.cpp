@@ -6,16 +6,24 @@ FormPdf::FormPdf(QWidget* parent)
     , ui(new Ui::FormPdf)
 {
     ui->setupUi(this);
+
+    //    ui->splitter->setStretchFactor(0, 3);
+    //    ui->splitter->setStretchFactor(1, 7);
+
+    ui->treeWidget->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     this->setAttribute(Qt::WA_DeleteOnClose);
     ui->label->setAlignment(Qt::AlignCenter); //居中显示
     m_PageRender = new PageRender(this);
     connect(m_PageRender, &PageRender::pageReady, this, &FormPdf::pageLoaded, Qt::QueuedConnection);
+
+    ui->scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    ui->scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
 
 FormPdf::~FormPdf()
 {
     delete ui;
-    //    qDebug() << "FormPdfDelete";
 }
 
 bool FormPdf::loadpdf()
@@ -31,6 +39,11 @@ bool FormPdf::loadpdf()
         m_pageCacheLimit = 10;
         numpages = pdfdoc->numPages();
         m_PageRender->setDocument(pdfdoc);
+
+        XmlLoad xmlload(PdfPath);
+        xmlload.get_xml_Marks(ui->treeWidget);
+        ui->treeWidget->expandAll();
+
         show();
         return true;
     } else
@@ -81,7 +94,7 @@ void FormPdf::mouseMoveEvent(QMouseEvent* event)
         y = event->y();
         int currentval_x = ui->scrollArea->horizontalScrollBar()->value() + x - event->x();
         ui->scrollArea->horizontalScrollBar()->setValue(currentval_x);
-        //        qDebug() << PDF->size() << area->size();
+        x = event->x();
     }
 }
 
@@ -96,6 +109,42 @@ void FormPdf::mouseReleaseEvent(QMouseEvent* event)
 {
     Q_UNUSED(event);
     mouse_is_press = false;
+}
+
+void FormPdf::wheelEvent(QWheelEvent* event)
+{
+
+    if (QApplication::keyboardModifiers() == Qt::ControlModifier) {
+        //按住了ctrl键
+        //        ui->scrollArea->verticalScrollBar()->setEnabled(false);
+        if (event->delta() < 0)
+            zoomOut(); //缩小
+        else
+            zoomIn(); //放大
+
+        return;
+    } else {
+        qDebug() << ui->scrollArea->verticalScrollBar()->value() << ui->scrollArea->verticalScrollBar()->maximum();
+        //        ui->scrollArea->verticalScrollBar()->setEnabled(true);
+        if (ui->scrollArea->verticalScrollBar()->maximum() == 0) {
+            if (event->delta() < 0)
+                nextpage();
+            else
+                prepage();
+            return;
+        }
+
+        int maxnum = ui->scrollArea->verticalScrollBar()->maximum();
+        int minnum = ui->scrollArea->verticalScrollBar()->minimum();
+
+        if (ui->scrollArea->verticalScrollBar()->value() == minnum)
+            prepage();
+        else if (ui->scrollArea->verticalScrollBar()->value() == maxnum) {
+            qDebug() << ui->scrollArea->verticalScrollBar()->value() << ui->scrollArea->verticalScrollBar()->maximum() << "!!!";
+            nextpage();
+        }
+        QWidget::wheelEvent(event);
+    }
 }
 
 void FormPdf::zoomIn()
@@ -148,6 +197,7 @@ void FormPdf::fitpageshow()
 void FormPdf::nextpage()
 {
     //下一页
+
     if (currentpage < pdfdoc->numPages() - 1) {
         currentpage += 1;
         show();
@@ -179,4 +229,12 @@ QSizeF FormPdf::getpagesize(int index)
 {
     //返回页面大小
     return pdfdoc->page(index)->pageSizeF();
+}
+
+void FormPdf::on_treeWidget_itemClicked(QTreeWidgetItem* item, int column)
+{
+    //点击书签，跳转到指定位置
+    Q_UNUSED(column);
+    int index = item->data(0, Qt::UserRole).toInt();
+    locatepage(index);
 }

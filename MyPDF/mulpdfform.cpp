@@ -16,17 +16,33 @@ MulPDFForm::MulPDFForm(QWidget* parent)
     area->setWidget(PDF);
     vlayout = new QVBoxLayout;
 
-    vlayout->addWidget(area);
-    vlayout->setSpacing(0);
-    vlayout->setContentsMargins(0, 0, 0, 0);
+    //    vlayout->addWidget(area);
+    //    vlayout->setSpacing(0);
+    //    vlayout->setContentsMargins(0, 0, 0, 0);
 
     this->setAttribute(Qt::WA_DeleteOnClose);
-    this->setLayout(vlayout);
+    splitter = new QSplitter(this);
+    dock = new QDockWidget(this);
+    treeWidget = new QTreeWidget(this);
+    dock->setWidget(treeWidget);
+    dock->setMaximumWidth(400);
+    dock->setFeatures(QDockWidget::DockWidgetClosable);
+    dock->setWindowTitle("书签");
+
+    splitter->addWidget(dock);
+    splitter->addWidget(area);
+
+    hlayout = new QHBoxLayout(this);
+    hlayout->addWidget(splitter);
+    hlayout->setSpacing(0);
+    hlayout->setContentsMargins(0, 0, 0, 0);
+    this->setLayout(hlayout);
 
     zoom = 1.0;
     currentpage = 0;
     numpages = 0;
     connect(PDF, &MulPage::updateinfo, this, &MulPDFForm::updateinfo);
+    connect(treeWidget, &QTreeWidget::itemClicked, this, &MulPDFForm::treeWidget_itemClicked);
 }
 
 MulPDFForm::~MulPDFForm()
@@ -86,10 +102,16 @@ void MulPDFForm::locatepage(int index)
     area->verticalScrollBar()->setValue(PDF->yForPage());
 }
 
-void MulPDFForm::openPDF(QString PDFpath)
+bool MulPDFForm::openPDF(QString PDFpath)
 {
     PdfPath = PDFpath;
-    PDF->setDocument(PDFpath);
+    if (PDF->setDocument(PDFpath)) {
+        XmlLoad xmlload(PDFpath);
+        xmlload.get_xml_Marks(treeWidget);
+        treeWidget->expandAll();
+        return true;
+    }
+    return false;
 }
 
 void MulPDFForm::mouseMoveEvent(QMouseEvent* event)
@@ -102,7 +124,7 @@ void MulPDFForm::mouseMoveEvent(QMouseEvent* event)
         y = event->y();
         int currentval_x = area->horizontalScrollBar()->value() + x - event->x();
         area->horizontalScrollBar()->setValue(currentval_x);
-        //        qDebug() << PDF->size() << area->size();
+        x = event->x();
     }
 }
 
@@ -117,4 +139,11 @@ void MulPDFForm::mouseReleaseEvent(QMouseEvent* event)
 {
     Q_UNUSED(event);
     mouse_is_press = false;
+}
+void MulPDFForm::treeWidget_itemClicked(QTreeWidgetItem* item, int column)
+{
+    //点击书签，跳转到指定位置
+    Q_UNUSED(column);
+    int index = item->data(0, Qt::UserRole).toInt();
+    locatepage(index);
 }

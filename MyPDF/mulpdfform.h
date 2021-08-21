@@ -1,13 +1,17 @@
 #ifndef MULPDFFORM_H
 #define MULPDFFORM_H
 
+#include <QDockWidget>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QMouseEvent>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QSplitter>
+#include <QTreeWidget>
 #include <QWidget>
 #include <mulpage.h>
+#include <xmlload.h>
 
 namespace Ui {
 class MulPDFForm;
@@ -20,7 +24,7 @@ public:
     explicit MulPDFForm(QWidget* parent = nullptr);
     ~MulPDFForm();
 
-    void openPDF(QString PDFpath);
+    bool openPDF(QString PDFpath);
 
     int currentpage;
     qreal zoom;
@@ -44,6 +48,9 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
 
+protected slots:
+    void treeWidget_itemClicked(QTreeWidgetItem* item, int column);
+
 private:
     Ui::MulPDFForm* ui;
     bool mouse_is_press; //鼠标被按下
@@ -53,6 +60,11 @@ private:
     MulPage* PDF;
     QScrollArea* area;
     QVBoxLayout* vlayout;
+
+    QSplitter* splitter;
+    QDockWidget* dock;
+    QTreeWidget* treeWidget;
+    QHBoxLayout* hlayout;
 
     void updateinfo(int current, int totalpages, qreal zoom);
 };

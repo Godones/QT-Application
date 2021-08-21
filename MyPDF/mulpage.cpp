@@ -127,11 +127,6 @@ void MulPage::pageLoaded(int page, qreal zoom, QImage image)
     }
     m_pageCache.insert(page, image);
     m_cachedPagesLRU.append(page);
-
-    //    DialogPDF* temp = new DialogPDF(this);
-    //    temp->load(QPixmap::fromImage(image));
-    //    temp->show();
-
     update(); //更新窗口，此处需要处理一下防止闪烁
 }
 
@@ -159,14 +154,15 @@ void MulPage::invalidate()
 void MulPage::paintEvent(QPaintEvent* event)
 {
     //重绘窗口
+    Q_UNUSED(event);
     QPainter painter(this);
     if (m_totalPages == 0) {
         return;
         //没有页面时，不用重绘
     }
     //找到第一张要绘制的画面
-    int t_top = event->rect().top();
-    int t_bottom = event->rect().bottom();
+//    int t_top = event->rect().top();
+//    int t_bottom = event->rect().bottom();
     int page = 0;
     int y = m_pageSpacing;
 
@@ -191,20 +187,15 @@ void MulPage::paintEvent(QPaintEvent* event)
             painter.fillRect((width() - timage.width()) / 2, y, tsize.width(),
                 tsize.height(), Qt::white);
 
-            //            qDebug()<<"tsize与timage应该一样大小"<<tsize<<timage.size();
-
-            //            qDebug() << "有" << QRect((width() - timage.width()) / 2, y, tsize.width(), tsize.height());
-
             painter.setRenderHint(QPainter::Antialiasing, true); //抗锯齿
             painter.drawPixmap((width() - timage.width()) / 2, y, QPixmap::fromImage(timage));
-            getPage(t_top, t_bottom);
+            getPage(t_vtop, t_vbottom);
             emit updateinfo(m_pageIndex, m_totalPages, m_zoom); //更新内容
 
         } else {
             //缓存中不存在
             painter.fillRect((width() - tsize.width()) / 2, y, tsize.width(),
                 tsize.height(), Qt::white);
-
             if (!m_PageRender->isRunning())
                 m_PageRender->requestPage(page, m_zoom); //加载pdf页面
         }
@@ -218,24 +209,25 @@ int MulPage::getPage(int t_vtop, int t_vbottom)
     //获取视图中央的页面索引
     int y = m_pageSpacing;
     int page = 0;
-    int center = (t_vtop + t_vbottom) / 2;
+    int center = (t_vtop + t_vbottom) / 2;//视图中央位置
 
     for (page = 0; page < m_totalPages; page++) {
-        int t_size = m_pageSpacing + pageSize(page).height();
-        if (y == t_vtop) {
-            m_pageIndex = page;
-            break;
-        }
+        int t_size = m_pageSpacing + pageSize(page).height();//一个页面+一个空白
+
+//        if (y == t_vtop) {
+//            m_pageIndex = page;
+//            break;
+//        }
         if (y < t_vtop && y + t_size >= t_vbottom) {
             //窗口视图较小
             m_pageIndex = page;
             break;
         }
-        if (y > t_vtop && y + t_size <= t_vbottom) {
-            m_pageIndex = page;
-            break;
-        }
-        if (y <= center && y + t_size > t_vbottom) {
+//        if (y > t_vtop && y + t_size <= t_vbottom) {
+//            m_pageIndex = page;
+//            break;
+//        }
+        if (y <= center && y + t_size > center) {
             m_pageIndex = page;
             break;
         }
@@ -243,6 +235,7 @@ int MulPage::getPage(int t_vtop, int t_vbottom)
             m_pageIndex = page - 1;
             break;
         }
+
         y += t_size;
     }
     return m_pageIndex;

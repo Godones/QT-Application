@@ -2,6 +2,7 @@
 #define FORMPDF_H
 
 #include "pagerender.h"
+#include "xmlload.h"
 #include <QDebug>
 #include <QImage>
 #include <QLabel>
@@ -12,7 +13,6 @@
 #include <QSizeF>
 #include <QWidget>
 #include <poppler-qt5.h>
-
 namespace Ui {
 class FormPdf;
 }
@@ -70,9 +70,14 @@ protected:
     int x;
     int y;
     bool mouse_is_press; //鼠标被按下
-    void mouseMoveEvent(QMouseEvent* event);
-    void mousePressEvent(QMouseEvent* event);
-    void mouseReleaseEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+
+    void wheelEvent(QWheelEvent* event) override;
+private slots:
+
+    void on_treeWidget_itemClicked(QTreeWidgetItem* item, int column);
 };
 
 #endif // FORMPDF_H

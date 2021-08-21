@@ -34,21 +34,6 @@ public slots:
 signals:
     void sentinformation_addfile(QStringList newnames); //增加文件时向showpdfform发射
 
-private:
-    void openpdf(QString filepath);
-
-    void openpdfMul(QString filepath);
-
-    void showpdfslot(QString filepath);
-
-    void isbelongQt(QString& dir);
-
-    void inputresposityname(QString& resposity);
-
-    void showpdftable();
-
-    void setActionTF();
-
 private slots:
     void on_openfileaction_triggered();
 
@@ -74,8 +59,6 @@ private slots:
 
     void on_tabWidget_tabCloseRequested(int index);
 
-    void on_treeWidget_itemClicked(QTreeWidgetItem* item, int column);
-
     void on_bigaction_triggered();
 
     void on_smalleraction_triggered();
@@ -96,7 +79,19 @@ private:
 
     QString getfinaldirname(const QString& fulldirname);
     void showtable(QString);
-    void get_xml_Marks(QString);
-    void read_xml(QDomNode node, QTreeWidgetItem* parent);
+
+    void openpdf(QString filepath);
+
+    void openpdfMul(QString filepath);
+
+    void showpdfslot(QString filepath);
+
+    void isbelongQt(QString& dir);
+
+    void inputresposityname(QString& resposity);
+
+    void showpdftable();
+
+    void setActionTF();
 };
 #endif // MAINWINDOW_H
